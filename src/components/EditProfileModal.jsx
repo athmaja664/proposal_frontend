@@ -29,6 +29,7 @@ const [showNewPassword, setShowNewPassword] = useState(false)
     
     if(response.status===200){
       toast.success('Profile updated successfullyy')
+      toast.success('Login again')
        //setLoading(false)
       onUpdate(response.data.user)
       onClose()

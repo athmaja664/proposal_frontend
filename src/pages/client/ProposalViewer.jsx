@@ -73,18 +73,18 @@ function ProposalViewer() {
 
         if (decision === 'Rejected') {
             response = await submitSignatureAPI(
-                { proposalId: proposal._id, decision: 'Rejected' },
+                { proposalId: proposal.id, decision: 'Rejected' },
                 { 'Content-Type': 'application/json' }
             )
         } else if (signatureMethod === 'draw') {
             const signatureBase64 = getSignatureImage()
             response = await submitSignatureAPI(
-                { proposalId: proposal._id, decision, signatureMethod, signatureBase64 },
+                { proposalId: proposal.id, decision, signatureMethod, signatureBase64 },
                 { 'Content-Type': 'application/json' }
             )
         } else if (signatureMethod === 'upload') {
             const fd = new FormData()
-            fd.append('proposalId', proposal._id)
+            fd.append('proposalId', proposal.id)
             fd.append('decision', decision)
             fd.append('signatureMethod', 'upload')
             fd.append('signatureFile', uploadedFile)
@@ -130,8 +130,8 @@ function ProposalViewer() {
                     <div className="bg-white rounded-lg shadow p-6">
                         <div className="flex justify-between items-start mb-4">
                             <div>
-                                <h2 className="text-xl font-semibold">{proposal.projectId.projectName}</h2>
-                                <p className="text-gray-500 text-sm">Prepared for {proposal.clientId.name}</p>
+                                <h2 className="text-xl font-semibold">{proposal.project_name}</h2>
+                                <p className="text-gray-500 text-sm">Prepared for {proposal.client_name}</p>
                             </div>
                             <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-3 py-1 rounded-full">
                                 Sent
@@ -140,11 +140,11 @@ function ProposalViewer() {
                         <div className="border-t pt-4 space-y-2">
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500">Project Name</span>
-                                <span className="font-medium">{proposal.projectId.projectName}</span>
+                                <span className="font-medium">{proposal.project_name}</span>
                             </div>
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500">Client Name</span>
-                                <span className="font-medium">{proposal.clientId.name}</span>
+                                <span className="font-medium">{proposal.client_name}</span>
                             </div>
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500">Description</span>
@@ -168,7 +168,7 @@ function ProposalViewer() {
                                 <input
                                     type="text"
                                     className="border p-2 rounded w-full text-sm focus:outline-none focus:border-black"
-                                    value={proposal?.clientId?.name}
+                                    value={proposal?.client_name}
                                     disabled
                                 />
                             </div>
@@ -177,7 +177,7 @@ function ProposalViewer() {
                                 <input
                                     type="email"
                                     className="border p-2 rounded w-full text-sm focus:outline-none focus:border-black"
-                                    value={proposal?.clientId?.email}
+                                    value={proposal?.client_email}
                                     disabled
                                 />
                             </div>
@@ -304,26 +304,11 @@ function ProposalViewer() {
 
                 </div>
                 <div className="w-[55%] flex flex-col">
-                    {proposal.documentUrl ? (
+                    {proposal.document_url ? (
                         <div className="bg-white rounded-lg shadow p-4 flex flex-col h-full">
                             <h3 className="font-medium mb-3">Proposal Document</h3>
-                            {/* <iframe
-                                //src={`${serverURL}/${proposal.documentUrl}`}
-                                src={proposal.documentUrl}
-                                width="100%"
-                                height="550px"
-                                className="border rounded"
-                                 
-                            /> */}
-                            {/* <iframe
-    src={`https://docs.google.com/viewer?url=${encodeURIComponent(proposal.documentUrl)}&embedded=true`}
-    width="100%"
-    style={{ height: '520px' }}
-    title="PDF Viewer"
-    className="border rounded"
-/> */}
 <iframe
-    src={proposal.documentUrl}
+    src={proposal.document_url}
     width="100%"
     style={{ height: '520px' }}
     title="PDF Viewer"

@@ -42,7 +42,8 @@ function PasswordGate() {
                 navigate('/success', {
                     state: {
                         proposal: response.data.proposal,
-                        decision: response.data.decision
+                        decision: response.data.decision,
+                        signature: response.data.signature 
                     }
                 });
             }, 1000)

@@ -10,13 +10,13 @@ function ViewProposalModal({ proposal, onClose }) {
         const getSignature = async () => {
             const token = localStorage.getItem('token')
             const reqHeader = { Authorization: `Bearer ${token}` }
-            const response = await getSignatureByProposalAPI(proposal._id, reqHeader)
+            const response = await getSignatureByProposalAPI(proposal.id, reqHeader)
             if (response?.status === 200) {
                 setSignature(response.data)
             }
         }
         getSignature()
-    }, [proposal._id])
+    }, [proposal.id])
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 
@@ -26,12 +26,12 @@ function ViewProposalModal({ proposal, onClose }) {
                     <h2 className="text-2xl font-bold mb-5">Proposal Details</h2>
 
                     <div className="space-y-3">
-                        <p><b>Client :</b> {proposal?.clientId?.name}</p>
-                        <p><b>Project :</b> {proposal?.projectId?.projectName}</p>
+                        <p><b>Client :</b> {proposal?.client_name}</p>
+                        <p><b>Project :</b> {proposal?.project_name}</p>
                         <p><b>Cost :</b> ₹{proposal?.cost}</p>
                         <p><b>Status :</b> {proposal?.status}</p>
                         <p><b>Description :</b> {proposal?.description}</p>
-                        <p><b>Created Date :</b> {proposal?.createdAt?.slice(0, 10)}</p>
+                        <p><b>Created Date :</b>{proposal?.created_at?.slice(0, 10)}</p>
                     </div>
 {/* Signature Section */}
                     {signature ? (
@@ -46,14 +46,14 @@ function ViewProposalModal({ proposal, onClose }) {
                             </div>
 
                             <p className="text-sm text-gray-500">
-                                Signed on : {signature.signedAt?.slice(0, 10)}
+                                Signed on : {signature.signed_at?.slice(0, 10)}
                             </p>
 
-                            {signature.decision === 'Accepted' && signature.signatureImageUrl && (
+                            {signature.decision === 'Accepted' && signature.signature_image_url && (
     <div>
         <p className="text-sm text-gray-500 mb-1">Signature :</p>
         <img
-            src={signature.signatureImageUrl}
+            src={signature.signature_image_url}
             alt="Client Signature"
             className="border rounded p-2 bg-gray-50 max-h-24 object-contain"
         />
@@ -71,17 +71,7 @@ function ViewProposalModal({ proposal, onClose }) {
     </a>
 )}
 
-                            {/* {signature.certificateUrl && (
-                                <a
-                                    href={`${serverURL}/${signature.certificateUrl}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    download
-                                    className="inline-flex items-center gap-2 bg-black text-white text-sm px-4 py-2 rounded hover:bg-gray-800 transition-all"
-                                >
-                                    ⬇ Download Certificate
-                                </a>
-                            )} */}
+                           
                         </div>
                     ) : (
                         <div className="mt-5 border-t pt-4">
@@ -118,7 +108,7 @@ function ViewProposalModal({ proposal, onClose }) {
                 
                 <div className="w-[55%] flex flex-col">
                     <h3 className="text-sm font-medium text-gray-500 mb-2">Proposal Document</h3>
-                    {proposal?.documentUrl ? (
+                    {proposal?.document_url ? (
                         // <iframe
                         //     //src={`${serverURL}/${proposal.documentUrl.replace(/\\/g, '/')}`}
                         //      src={proposal.documentUrl.replace(/\\/g, '/')}
@@ -135,7 +125,7 @@ function ViewProposalModal({ proposal, onClose }) {
 //     className="border rounded"
 // />
 <iframe
-    src={proposal.documentUrl}
+    src={proposal.document_url}
     width="100%"
     style={{ height: '520px' }}
     title="PDF Viewer"

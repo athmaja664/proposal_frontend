@@ -81,12 +81,12 @@ function CreateProposal() {
         }
     }
     //Dropdown search
-    const clientOptions = [ ...clients.map(client => ({ value: client._id, label: client.name })) ,
+    const clientOptions = [ ...clients.map(client => ({ value: client.id, label: client.name })) ,
     { value: 'new', label: '+ New Client' }
 
     ]
 
-    const projectOptions = [ ...projects.map(project => ({ value:project._id,label:project.projectName})) ,
+    const projectOptions = [ ...projects.map(project => ({ value:project.id,label:project.project_name})) ,
     { value: 'new', label: '+ New Project' }
     ]
 
@@ -102,7 +102,7 @@ function CreateProposal() {
             }
             const clientRes = await addclientAPI(newClientData, reqHeader)
             if (clientRes.status === 200) {
-                clientId = clientRes.data.newClient._id
+                clientId = clientRes.data.newClient.id
             } else {
                 toast.error(clientRes.data.message)
                 return
@@ -117,7 +117,7 @@ function CreateProposal() {
             }
             const projectRes = await addprojectAPI({ projectName: newProjectData.projectName, clientId }, reqHeader)
             if (projectRes.status === 200) {
-                projectId = projectRes.data.newProject._id
+                projectId = projectRes.data.newProject.id
             } else {
                 toast.error(projectRes.data.message)
                 return

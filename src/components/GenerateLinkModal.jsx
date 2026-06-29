@@ -20,7 +20,7 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                 const link = `${window.location.origin}/view/${response.data.token}`
                 setGeneratedLink(link)
                 setGeneratedToken(response.data.token)
-                setIsRevoked(response.data.isRevoked)
+                setIsRevoked(response.data.is_revoked)
                 setPassword(response.data.password || '')
 
             }
@@ -47,6 +47,8 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                 if (regenResponse.status === 200) {
                     setGeneratedLink(regenResponse.data.link)
                     setGeneratedToken(regenResponse.data.token)
+                   // console.log(response);
+                    
                 }
             }
         } else {
@@ -73,6 +75,8 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
             if (response.status === 200) {
                 toast.success('Link UnRevoked Successfullyy!')
                 setIsRevoked(false)
+                console.log(response);
+                
             }else{
             toast.error('Failed to unrevoke link')
             }

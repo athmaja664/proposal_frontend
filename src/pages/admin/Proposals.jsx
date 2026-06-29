@@ -54,8 +54,8 @@ useEffect(() => {
 }, [])
     const filterProposal = proposals.filter((item) =>
         (
-            item.projectId.projectName.toLowerCase().includes(searchKey.toLowerCase()) ||
-            item.clientId.name.toLowerCase().includes(searchKey.toLowerCase())
+            item.project_name.toLowerCase().includes(searchKey.toLowerCase()) ||
+            item.client_name.toLowerCase().includes(searchKey.toLowerCase())
         )
         &&
         (
@@ -117,12 +117,12 @@ useEffect(() => {
                             </thead>
                             <tbody>
                                 {filterProposal.length ? filterProposal.map((item) => (
-                                    <tr key={item._id} className="border-b hover:bg-gray-50 transition-all">
+                                    <tr key={item.id} className="border-b hover:bg-gray-50 transition-all">
                                         <td className="px-6 py-4 font-medium text-gray-800">
-                                            {item.projectId.projectName}
+                                            {item.project_name}
                                         </td>
                                         <td className="px-6 py-4 text-gray-500">
-                                            {item.clientId.name}
+                                            {item.client_name}
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`${getStatusStyle(item.status)} px-3 py-1 rounded-full text-xs font-medium capitalize`}>
@@ -130,7 +130,7 @@ useEffect(() => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-gray-500">
-                                            {item.createdAt.slice(0, 10)}
+                                           {item.created_at.slice(0, 10)}
                                         </td>
                                         <td className="px-6 py-4 space-x-3">
                                             <span
@@ -157,10 +157,10 @@ useEffect(() => {
                                             >
                                                 Delete
                                             </span> */}
-                                            {confirmDeleteId === item._id ? (
+                                            {confirmDeleteId === item.id ? (
                                                 <span className="inline-flex gap-2">
                                                     <span
-                                                        onClick={() => handleDelete(item._id)}
+                                                        onClick={() => handleDelete(item.id)}
                                                         className="text-red-500 cursor-pointer text-xs border border-red-300 px-2 py-0.5 rounded hover:bg-red-50"
                                                     >
                                                         Yes, delete
@@ -174,7 +174,7 @@ useEffect(() => {
                                                 </span>
                                             ) : (
                                                 <span
-                                                    onClick={() => setConfirmDeleteId(item._id)}
+                                                    onClick={() => setConfirmDeleteId(item.id)}
                                                     className="text-red-500 cursor-pointer hover:underline"
                                                 >
                                                     Delete
@@ -182,7 +182,7 @@ useEffect(() => {
                                             )}
                                             <span
                                                 onClick={() => {
-                                                    setSelectedProposalId(item._id)
+                                                    setSelectedProposalId(item.id)
                                                     setSelectedProposal(item)
                                                     setShowLinkModal(true)
                                                 }}

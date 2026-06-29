@@ -36,23 +36,27 @@ function AuditLogs() {
         return 'bg-gray-100 text-gray-700'
     }
 
-    const filteredLogs = logs.filter((log) => {
-        const matchSearchClient = log.proposalId?.clientId?.name
-            ?.toLowerCase().includes(searchKey.toLowerCase()) || searchKey === ''
+   const filteredLogs = logs.filter((log) => {
+    const matchSearch =
+        log.client_name?.toLowerCase().includes(searchKey.toLowerCase()) ||
+        log.project_name?.toLowerCase().includes(searchKey.toLowerCase()) ||
+        searchKey === ''
 
-            const matchSearchProject = log.proposalId?.projectId?.projectName
-            ?.toLowerCase().includes(searchKey.toLowerCase()) || searchKey === ''
+    const matchPerformedBy =
+        filterPerformedBy === 'All' ||
+        log.performed_by?.toLowerCase() === filterPerformedBy.toLowerCase()
 
-        const matchPerformedBy = filterPerformedBy === 'All' ||
-            log.performedBy?.toLowerCase() === filterPerformedBy.toLowerCase()
+    const matchAction =
+        filterAction === 'All' ||
+        log.action === filterAction
 
-        const matchAction = filterAction === 'All' || log.action === filterAction
+    const matchDate =
+        filterDate === '' ||
+        new Date(log.created_at).toLocaleDateString() ===
+        new Date(filterDate).toLocaleDateString()
 
-        const matchDate = filterDate === '' ||
-            new Date(log.createdAt).toLocaleDateString() === new Date(filterDate).toLocaleDateString()
-
-        return matchSearchClient && matchSearchProject && matchPerformedBy && matchAction && matchDate
-    })
+    return matchSearch && matchPerformedBy && matchAction && matchDate
+})
 
     const handleClearEmpty = async () => {
     const confirm = window.confirm('Delete all logs with missing proposal data?')
@@ -129,23 +133,23 @@ if (loading) return <Spinner />
                         </thead>
                         <tbody>
                             {filteredLogs.length ? filteredLogs.map((log) => (
-                                <tr key={log._id} className="border-b hover:bg-gray-50">
+                                <tr key={log.id} className="border-b hover:bg-gray-50">
                                     <td className="px-6 py-4">
                                         <span className={`${getActionStyle(log.action)} text-xs font-medium px-3 py-1 rounded-full`}>
                                             {log.action.replace(/_/g, ' ')}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-gray-500">
-                                        {log.proposalId?.clientId?.name}
+                                        {log.client_name}
                                     </td>
                                     <td className="px-6 py-4 text-gray-500">
-                                        {log.proposalId?.projectId?.projectName}
+                                        {log.project_name}
                                     </td>
                                     <td className="px-6 py-4 text-gray-500">
-                                        {log.performedBy}
+                                        {log.performed_by}
                                     </td>
                                     <td className="px-6 py-4 text-gray-500">
-                                        {new Date(log.createdAt).toLocaleString()}
+                                       {new Date(log.created_at).toLocaleString()}
                                     </td>
                                 </tr>
                             )) : (

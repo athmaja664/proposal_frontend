@@ -7,7 +7,7 @@ function ProposalSuccess() {
     const location = useLocation()
     const { proposal, decision, signature } = location.state || {}
 
-    const timestamp = signature?.signedAt
+    const timestamp = signature?.signed_at
         ? new Date(signature.signedAt).toLocaleString()
         : new Date().toLocaleString()
 
@@ -27,11 +27,11 @@ function ProposalSuccess() {
         })
 
         const details = [
-            { label: 'Proposal', value: proposal?.projectId?.projectName },
-            { label: 'Client Name', value: signature?.clientName },
-            { label: 'Client Email', value: signature?.clientEmail },
+            { label: 'Proposal', value: proposal?.project_name },
+            { label: 'Client Name', value: signature?.client_name },
+            { label: 'Client Email', value: signature?.client_email },
             { label: 'Decision', value: decision },
-            { label: 'IP Address', value: signature?.ipAddress },
+            { label: 'IP Address', value: signature?.ip_address },
             { label: 'Timestamp', value: timestamp },
         ]
 
@@ -45,13 +45,13 @@ function ProposalSuccess() {
             })
             y -= 30
         })
-if (decision === 'Accepted' && signature?.signatureImageUrl) {
+if (decision === 'Accepted' && signature?.signature_image_url) {
     try {
-        const imgUrl = signature.signatureImageUrl
+        const imgUrl = signature.signature_image_url
         const imgBytes = await fetch(imgUrl).then(r => r.arrayBuffer())
         
         let img
-        const isPNG = signature.signatureImageUrl.toLowerCase().endsWith('.png')
+        const isPNG = signature.signature_image_url.toLowerCase().endsWith('.png')
         if (isPNG) {
             img = await pdfDoc.embedPng(imgBytes)
         } else {
@@ -73,7 +73,7 @@ if (decision === 'Accepted' && signature?.signatureImageUrl) {
         const blob = new Blob([pdfBytes], { type: 'application/pdf' })
         const link = document.createElement('a')
         link.href = URL.createObjectURL(blob)
-        link.download = `proposal_${signature?.clientName}_${decision}.pdf`
+        link.download = `proposal_${signature?.client_name}_${decision}.pdf`
         link.click()
          toast.success('Downloaded')
     }catch(err){
@@ -119,15 +119,15 @@ if (decision === 'Accepted' && signature?.signatureImageUrl) {
                     <div className="bg-gray-50 rounded p-4 text-left space-y-2">
                         <div className="flex justify-between text-sm">
                             <span className="text-gray-500">Proposal</span>
-                            <span className="font-medium">{proposal?.projectId?.projectName}</span>
+                            <span className="font-medium">{proposal?.project_name}</span>
                         </div>
                         <div className="flex justify-between text-sm">
                             <span className="text-gray-500">Client</span>
-                            <span className="font-medium">{signature?.clientName}</span>
+                            <span className="font-medium">{signature?.client_name}</span>
                         </div>
                         <div className="flex justify-between text-sm">
                             <span className="text-gray-500">Email</span>
-                            <span className="font-medium">{signature?.clientEmail}</span>
+                            <span className="font-medium">{signature?.client_email}</span>
                         </div>
                         <div className="flex justify-between text-sm">
                             <span className="text-gray-500">Status</span>

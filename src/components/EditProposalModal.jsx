@@ -22,7 +22,7 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
         if (proposalData.document) {
             formData.append('document', proposalData.document)
         }
-        const response = await updatedProposalAPI(proposal._id, formData, reqHeader)
+        const response = await updatedProposalAPI(proposal.id, formData, reqHeader)
         if (response.status === 200) {
             toast.success('Proposal Updated')
             getProposals()
@@ -48,7 +48,7 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
                             <label className="text-sm text-gray-500 mb-1 block">Client</label>
                             <input
                                 type="text"
-                                value={proposal?.clientId?.name}
+                                value={proposal?.client_name}
                                 disabled
                                 className="border p-2 rounded w-full bg-gray-100"
                             />
@@ -57,7 +57,7 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
                             <label className="text-sm text-gray-500 mb-1 block">Project</label>
                             <input
                                 type="text"
-                                value={proposal?.projectId?.projectName}
+                                value={proposal?.project_name}
                                 disabled
                                 className="border p-2 rounded w-full bg-gray-100"
                             />
@@ -126,7 +126,7 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
                 {/* RIGHT - PDF Preview */}
                 <div className="w-[45%] flex flex-col">
                     <h3 className="text-sm font-medium text-gray-500 mb-2">Current Document</h3>
-                    {proposal?.documentUrl ? (
+                    {proposal?.document_url ? (
                         // <iframe
                         //     src={proposal.documentUrl}
                         //     width="100%"
@@ -142,7 +142,7 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
 //     className="border rounded"
 // />
 <iframe
-    src={proposal.documentUrl}
+    src={proposal.document_url}
     width="100%"
     style={{ height: '520px' }}
     title="PDF Viewer"
