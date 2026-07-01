@@ -22,7 +22,6 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                 setGeneratedToken(response.data.token)
                 setIsRevoked(response.data.is_revoked)
                 setPassword(response.data.password || '')
-
             }
         }
         getExistingLink()
@@ -40,15 +39,11 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
         } else if (response.data.hasExistingLink) {
             const confirm = window.confirm('Link already exists. Regenerate?')
             if (confirm) {
-                const regenResponse = await generateLinkAPI(
-                    { proposalId, password, expiryDate, forceRegenerate: true },
-                    reqHeader
-                )
+                const regenResponse = await generateLinkAPI({ proposalId, password, expiryDate, forceRegenerate: true },reqHeader)
                 if (regenResponse.status === 200) {
                     setGeneratedLink(regenResponse.data.link)
                     setGeneratedToken(regenResponse.data.token)
                    // console.log(response);
-                    
                 }
             }
         } else {

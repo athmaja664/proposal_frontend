@@ -27,7 +27,6 @@ function PasswordGate() {
         }
     };
 
-
     const handleVerifyPassword = async () => {
     if (!password) {
         toast.error("Please fill the Form");
