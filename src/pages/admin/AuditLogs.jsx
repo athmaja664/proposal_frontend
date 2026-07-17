@@ -10,8 +10,13 @@ function AuditLogs() {
     const [filterAction, setFilterAction] = useState('All')
     const [filterDate, setFilterDate] = useState('')
     //spinner
-    const[loading,setLoading]=useState(true)
+    const [loading, setLoading] = useState(true)
     const token = localStorage.getItem('token')
+    // controls the custom "Clear Empty Logs" confirmation popup
+    const [showClearConfirm, setShowClearConfirm] = useState(false)
+    //pagination
+    const [currentPage, setCurrentPage] = useState(1)
+    const logsPerPage = 10
 
     const getLogs = async () => {
         const reqHeader = { Authorization: `Bearer ${token}` }
@@ -36,93 +41,154 @@ function AuditLogs() {
         return 'bg-gray-100 text-gray-700'
     }
 
-   const filteredLogs = logs.filter((log) => {
-    const matchSearch =
-        log.client_name?.toLowerCase().includes(searchKey.toLowerCase()) ||
-        log.project_name?.toLowerCase().includes(searchKey.toLowerCase()) ||
-        searchKey === ''
+    const filteredLogs = logs.filter((log) => {
+        const matchSearch =
+            log.client_name?.toLowerCase().includes(searchKey.toLowerCase()) ||
+            log.project_name?.toLowerCase().includes(searchKey.toLowerCase()) ||
+            searchKey === ''
 
-    const matchPerformedBy =
-        filterPerformedBy === 'All' ||
-        log.performed_by?.toLowerCase() === filterPerformedBy.toLowerCase()
+        const matchPerformedBy =
+            filterPerformedBy === 'All' ||
+            log.performed_by?.toLowerCase() === filterPerformedBy.toLowerCase()
 
-    const matchAction =
-        filterAction === 'All' ||
-        log.action === filterAction
+        const matchAction =
+            filterAction === 'All' ||
+            log.action === filterAction
 
-    const matchDate =
-        filterDate === '' ||
-        new Date(log.created_at).toLocaleDateString() ===
-        new Date(filterDate).toLocaleDateString()
+        const matchDate =
+            filterDate === '' ||
+            new Date(log.created_at).toLocaleDateString() ===
+            new Date(filterDate).toLocaleDateString()
 
-    return matchSearch && matchPerformedBy && matchAction && matchDate
-})
+        return matchSearch && matchPerformedBy && matchAction && matchDate
+    })
+
+    //pagination calculations
+    const lastIndex = currentPage * logsPerPage;
+    const firstIndex = lastIndex - logsPerPage;
+    const currentLogs = filteredLogs.slice(firstIndex, lastIndex);
+    const totalPages = Math.ceil(filteredLogs.length / logsPerPage);
+
+    //reset to page 1 whenever any filter changes
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [searchKey, filterPerformedBy, filterAction, filterDate])
+
+    // builds a compact page list like [1, '...', 4, 5, 6, '...', 12] instead of every page number
+    const getPageNumbers = () => {
+        const pages = []
+        const delta = 1 // how many neighbours to show around current page
+
+        for (let i = 1; i <= totalPages; i++) {
+            if (
+                i === 1 ||
+                i === totalPages ||
+                (i >= currentPage - delta && i <= currentPage + delta)
+            ) {
+                pages.push(i)
+            } else if (pages[pages.length - 1] !== '...') {
+                pages.push('...')
+            }
+        }
+        return pages
+    }
 
     const handleClearEmpty = async () => {
-    const confirm = window.confirm('Delete all logs with missing proposal data?')
-    if (confirm) {
+        setShowClearConfirm(true)
+    }
+
+    const confirmClearEmpty = async () => {
         const reqHeader = { Authorization: `Bearer ${token}` }
         const response = await clearEmptyLogsAPI(reqHeader)
         if (response.status === 200) {
             toast.success('Cleared!')
             getLogs() // refresh
         }
+        setShowClearConfirm(false)
     }
-}
-if (loading) return <Spinner />
+    if (loading) return <Spinner />
     return (
-        <div className="flex min-h-screen bg-blue-50">
-             <Toaster position="top-center" />
+        <div
+            className="flex flex-col min-h-screen bg-[#f9fafc]"
+            style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}
+        >
+            <Toaster position="top-center" />
             <Sidebar />
-            <div className="flex-1 p-8">
-                <h1 className="text-3xl font-bold text-gray-800 mb-8">Audit Logs</h1>
 
-              {/* Filters */}
-<div className="flex flex-wrap gap-3 mb-6">
-    <input
-        type="text"
-        placeholder="Search"
-        className="border border-gray-300 bg-white px-4 py-2 rounded-lg outline-none text-sm w-52"
-        onChange={(e) => setSearchKey(e.target.value)}
-    />
-    <select
-        className="border border-gray-300 bg-white px-4 py-2 rounded-lg outline-none text-sm"
-        onChange={(e) => setFilterPerformedBy(e.target.value)}
-    >
-        <option value="All">All Users</option>
-        <option value="admin">Admin</option>
-        <option value="client">Client</option>
-    </select>
-    <select
-        className="border border-gray-300 bg-white px-4 py-2 rounded-lg outline-none text-sm"
-        onChange={(e) => setFilterAction(e.target.value)}
-    >
-        <option value="All">All Actions</option>
-        <option value="proposal_created">Proposal Created</option>
-        <option value="link_generated">Link Generated</option>
-        <option value="link_revoked">Link Revoked</option>
-        <option value="link_unrevoked">Link Unrevoked</option>
-        <option value="client_accessed">Client Accessed</option>
-        <option value="signature_submitted">Signature Submitted</option>
-    </select>
-    <input
-        type="date"
-        className="border border-gray-300 bg-white px-4 py-2 rounded-lg outline-none text-sm"
-        onChange={(e) => setFilterDate(e.target.value)}
-    />
-    {/* Clear Empty Logs Button */}
-    <button
-        onClick={handleClearEmpty}
-        className="border border-gray-300 text-black px-4 py-2 rounded-lg text-sm bg-white"
-    >
-        Clear Empty Logs
-    </button>
-</div>
+            <div className="flex-1 px-10 py-8 max-w-[1591px] w-full mx-auto">
+
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-[28px] font-semibold text-[#3f4050] tracking-wide">
+                        Audit Logs
+                    </h1>
+                </div>
+
+                {/* Filters */}
+                <div className="flex flex-wrap items-end gap-6 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] mb-8">
+                    <div className="flex flex-col gap-2 flex-1 min-w-[220px]">
+                        <label className="text-sm font-medium text-[#555665]">Search</label>
+                        <input
+                            type="text"
+                            placeholder="Search by client or project"
+                            className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
+                            onChange={(e) => setSearchKey(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-2 min-w-[180px]">
+                        <label className="text-sm font-medium text-[#555665]">Performed By</label>
+                        <select
+                            className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
+                            onChange={(e) => setFilterPerformedBy(e.target.value)}
+                        >
+                            <option value="All">All Users</option>
+                            <option value="admin">Admin</option>
+                            <option value="client">Client</option>
+                        </select>
+                    </div>
+
+                    <div className="flex flex-col gap-2 min-w-[220px]">
+                        <label className="text-sm font-medium text-[#555665]">Action</label>
+                        <select
+                            className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
+                            onChange={(e) => setFilterAction(e.target.value)}
+                        >
+                            <option value="All">All Actions</option>
+                            <option value="proposal_created">Proposal Created</option>
+                            <option value="link_generated">Link Generated</option>
+                            <option value="link_revoked">Link Revoked</option>
+                            <option value="link_unrevoked">Link Unrevoked</option>
+                            <option value="client_accessed">Client Accessed</option>
+                            <option value="signature_submitted">Signature Submitted</option>
+                        </select>
+                    </div>
+
+                    <div className="flex flex-col gap-2 min-w-[180px]">
+                        <label className="text-sm font-medium text-[#555665]">Date</label>
+                        <input
+                            type="date"
+                            className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
+                            onChange={(e) => setFilterDate(e.target.value)}
+                        />
+                    </div>
+
+                    {/* Clear Empty Logs Button */}
+                    <button
+                        onClick={handleClearEmpty}
+                        className="px-5 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm font-medium text-[#555665] hover:bg-[#f9fafc] cursor-pointer"
+                    >
+                        Clear Empty Logs
+                    </button>
+                </div>
+
+                <h2 className="text-xl font-semibold text-black mb-5">
+                    Activity
+                </h2>
 
                 {/* Table */}
-                <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-200">
+                <div className="bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] overflow-hidden">
                     <table className="w-full text-sm">
-                        <thead className="bg-gray-100 border-b text-gray-700">
+                        <thead className="bg-[#f9fafc] border-b border-[#e7e7eb] text-[#555665]">
                             <tr>
                                 <th className="text-left px-6 py-4 font-semibold">Action</th>
                                 <th className="text-left px-6 py-4 font-semibold">Client</th>
@@ -132,38 +198,135 @@ if (loading) return <Spinner />
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredLogs.length ? filteredLogs.map((log) => (
-                                <tr key={log.id} className="border-b hover:bg-gray-50">
+                            {currentLogs.length ? currentLogs.map((log) => (
+                                <tr key={log.id} className="border-b border-[#e7e7eb] hover:bg-[#f9fafc]">
                                     <td className="px-6 py-4">
                                         <span className={`${getActionStyle(log.action)} text-xs font-medium px-3 py-1 rounded-full`}>
                                             {log.action.replace(/_/g, ' ')}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-gray-500">
+                                    <td className="px-6 py-4 text-[#818293]">
                                         {log.client_name}
                                     </td>
-                                    <td className="px-6 py-4 text-gray-500">
+                                    <td className="px-6 py-4 text-[#818293]">
                                         {log.project_name}
                                     </td>
-                                    <td className="px-6 py-4 text-gray-500">
+                                    <td className="px-6 py-4 text-[#818293]">
                                         {log.performed_by}
                                     </td>
-                                    <td className="px-6 py-4 text-gray-500">
-                                       {new Date(log.created_at).toLocaleString()}
+                                    <td className="px-6 py-4 text-[#818293]">
+                                        {new Date(log.created_at).toLocaleString()}
                                     </td>
                                 </tr>
                             )) : (
                                 <tr>
-                                    <td colSpan="4" className="text-center py-4 text-gray-400">
+                                    <td colSpan="5" className="text-center py-10 text-[#9698a6]">
                                         No logs found
                                     </td>
                                 </tr>
                             )}
-  
+
                         </tbody>
                     </table>
                 </div>
+
+                {/* pagination */}
+                {filteredLogs.length > 0 && (
+                    <div className="flex items-center justify-between mt-10">
+
+                        {/* Left Side */}
+                        <div className="px-4 py-2 bg-white border border-[#e7e7eb] rounded-lg text-sm text-[#555665] shadow-sm">
+                            Showing{" "}
+                            <span className="font-semibold">{firstIndex + 1}</span>{" "}
+                            to{" "}
+                            <span className="font-semibold">
+                                {Math.min(lastIndex, filteredLogs.length)}
+                            </span>{" "}
+                            of{" "}
+                            <span className="font-semibold">{filteredLogs.length}</span>{" "}
+                            Entries
+                        </div>
+
+                        {/* Right Side */}
+                        <div className="flex items-center gap-2">
+
+                            <button
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff]"
+                            >
+                                &#10094;
+                            </button>
+
+                            {getPageNumbers().map((page, index) =>
+                                page === '...' ? (
+                                    <span
+                                        key={`dots-${index}`}
+                                        className="w-10 h-10 flex items-center justify-center text-sm text-[#818293] select-none"
+                                    >
+                                        &#8230;
+                                    </span>
+                                ) : (
+                                    <button
+                                        key={page}
+                                        onClick={() => setCurrentPage(page)}
+                                        className={`w-10 h-10 rounded-lg text-sm font-medium transition
+          ${currentPage === page
+                                                ? "bg-[#576aff] text-white"
+                                                : "bg-white border border-[#d9dce8] text-[#555665] hover:bg-[#f5f7ff]"
+                                            }`}
+                                    >
+                                        {page}
+                                    </button>
+                                )
+                            )}
+
+                            <button
+                                onClick={() => setCurrentPage(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff]"
+                            >
+                                &#10095;
+                            </button>
+
+                        </div>
+
+                    </div>
+                )}
             </div>
+
+            {showClearConfirm && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+                    <div className="w-full max-w-sm bg-white rounded-[16px] shadow-xl p-8 flex flex-col items-center gap-5 text-center">
+                        <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
+                            <svg width="26" height="26" fill="none" viewBox="0 0 24 24">
+                                <path d="M6 7h12M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0-1 12a2 2 0 01-2 2H9a2 2 0 01-2-2L6 7h12z"
+                                    stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-[#3f4050] mb-1">Clear Empty Logs</h3>
+                            <p className="text-sm text-[#818293]">Are you sure you want to delete all logs with missing proposal data? This action cannot be undone.</p>
+                        </div>
+                        <div className="flex gap-3 w-full mt-2">
+                            <button
+                                type="button"
+                                onClick={() => setShowClearConfirm(false)}
+                                className="flex-1 px-5 py-2.5 rounded-[8px] border-2 border-[#d9dce8] text-sm font-medium text-[#555665] hover:bg-[#f9fafc] cursor-pointer"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={confirmClearEmpty}
+                                className="flex-1 px-5 py-2.5 rounded-[8px] text-sm font-medium text-white bg-red-500 hover:bg-red-600 transition-colors cursor-pointer"
+                            >
+                                Yes, clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

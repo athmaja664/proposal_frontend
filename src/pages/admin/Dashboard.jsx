@@ -6,18 +6,28 @@ import { IoFileTrayFull } from "react-icons/io5";
 import { FcAcceptDatabase } from "react-icons/fc";
 import { HiPresentationChartLine } from "react-icons/hi";
 import { MdOutlineSmsFailed } from "react-icons/md";
+import { HiOutlineNoSymbol } from "react-icons/hi2";
 import Spinner from "../../components/Spinner";
 function Dashboard() {
     const navigate = useNavigate()
-    const [proposalData, setProposalData] = useState([])
+    const [searchInput, setSearchInput] = useState("");
+    const [statusInput, setStatusInput] = useState("All Status");
+    const [dateInput, setDateInput] = useState("");
+    const [logs, setLogs] = useState([])
+    const [proposalData, setProposalData] = useState([]);
+    const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [statusFilter, setStatusFilter] = useState("All Status")
+    const [filterDate, setFilterDate] = useState('')
     //spinner
-    const [loading,setLoading]=useState(true)
+    const [loading, setLoading] = useState(true)
     const getProposals = async () => {
         const token = localStorage.getItem('token')
         const reqHeader = { Authorization: `Bearer ${token}` }//crt tokn
         const response = await listProposalAPI(reqHeader)//snt tkn to bc
         if (response.status === 200) {
             setProposalData(response.data)
+            console.log("Dashboard Component Loaded");
         }
         setLoading(false)
     }
@@ -25,137 +35,275 @@ function Dashboard() {
         getProposals()
     }, [])
 
+    const filterProposal = proposalData.filter((item) => {
+        const matchSearch =
+            item.project_name.toLowerCase().includes(search.toLowerCase()) ||
+            item.client_name.toLowerCase().includes(search.toLowerCase());
 
+        const matchStatus =
+            statusFilter === "All Status" ||
+            item.status === statusFilter;
 
+        const matchDate =
+            filterDate === "" ||
+            item.created_at.slice(0, 10) === filterDate;
+
+        return matchSearch && matchStatus && matchDate;
+    });
+
+    const cardsPerPage = 7
+    const lastIndex = currentPage * cardsPerPage;
+    const firstIndex = lastIndex - cardsPerPage;
+    const currentProposal = filterProposal.slice(firstIndex, lastIndex);
+    const totalPages = Math.ceil(filterProposal.length / cardsPerPage);
     const totalProposals = proposalData.length
     const acceptedProposals = proposalData.filter((item) => item.status === 'Accepted').length
     const sentingProposals = proposalData.filter((item) => item.status === 'Sent').length
-    const rejectedProposals = proposalData.filter((item) => item.status === 'Rejected').length
+    const draftProposals = proposalData.filter((item) => item.status === 'Draft').length
 
 
     const getStatusStyle = (status) => {
-        if (status === 'Accepted') return 'bg-green-100 text-green-700'
-        if (status === 'Sent') return 'bg-yellow-100 text-yellow-700'
-        if (status === 'Draft') return 'bg-gray-200 text-gray-700'
-        if (status === 'Rejected') return 'bg-red-100 text-red-700'
-        if (status === 'Archived') return 'bg-blue-100 text-blue-700'
+        // if (status === 'Accepted') return 'bg-[#bcefb0] text-[#3d6b35] border border-[#a7d59d]'
+        if (status === 'Accepted') return 'bg-blue-100 text-blue-700 border border-blue-200'
+        if (status === 'Sent') return 'bg-[#bcefb0] text-[#3d6b35] border border-[#a7d59d]'
+        // if (status === 'Sent') return 'bg-[#fdf17b] text-[#847b2c] border border-[#efe478]'
+        // if (status === 'Draft') return 'bg-[#e7e7eb] text-[#7f84aa] border border-[#cfd3e4]'
+        if (status === 'Draft') return 'bg-[#fdf17b] text-[#847b2c] border border-[#efe478]'
+        if (status === 'Rejected') return 'bg-red-100 text-red-700 border border-red-200'
+        // if (status === 'Archived') return 'bg-blue-100 text-blue-700 border border-blue-200'
     }
     if (loading) return <Spinner />
     return (
         <>
-            <div className="flex">
+            <div className="flex flex-col min-h-screen bg-[#f9fafc]"
+                style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}>
 
                 <Sidebar />
 
-                <div className="flex-1 bg-blue-50 p-6">
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <h1 className="text-2xl font-semibold">Dashboard</h1>
-                            <p className="text-gray-500">Welcome back, Admin</p>
+                <div className="flex-1 px-10 py-8 max-w-[1591px] w-full mx-auto">
+
+                    {/* metrics */}
+                    <div className="grid grid-cols-4 gap-[29px] mb-[60px] mt-6 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
+                        <div className="flex items-start gap-5 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)]">
+                            <img src="/icons/receipt-edit.svg" alt="total" className="w-12 h-12 hover:opacity-70" />
+                            <div>
+                                <p className="text-lg font-medium text-[#555665] mb-1">Total Proposals</p>
+                                <h2 className="text-[40px] font-semibold leading-[52px] text-[#3f4050]">{totalProposals}</h2>
+                                <p className="text-base text-[#555665]">All Proposals</p>
+                            </div>
                         </div>
 
-                        <button className="text-white px-4 py-2 rounded" >
-                            <Link to="/createproposal" className="text-white p-3  " style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }} >
-                                + New Proposal
-                            </Link>
+                        <div className="flex items-start gap-5 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)]">
+                            <img src="/icons/right.svg" alt="accept" className="w-12 h-12 hover:opacity-70" />
 
-                        </button>
+                            <div>
+                                <p className="text-lg font-medium text-[#555665] mb-1">Accepted</p>
+                                <h2 className="text-[40px] font-semibold leading-[52px] text-[#3f4050]">{acceptedProposals}</h2>
+                                <p className="text-base text-[#555665]">Proposals Accepted</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start gap-5 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)]">
+                            <img src="/icons/user.svg" alt="" className="w-12 h-12 hover:opacity-70" />
+                            <div>
+                                <p className="text-lg font-medium text-[#555665] mb-1">Sent</p>
+                                <h2 className="text-[40px] font-semibold leading-[52px] text-[#3f4050]">{sentingProposals}</h2>
+                                <p className="text-base text-[#555665]">Proposals Sent</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start gap-5 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)]">
+                            <img src="/icons/duration.svg" alt="darft" className="w-12 h-12 hover:opacity-70" />
+                            <div>
+                                <p className="text-lg font-medium text-[#555665] mb-1">Draft</p>
+                                <h2 className="text-[40px] font-semibold leading-[52px] text-[#3f4050]">{draftProposals}</h2>
+                                <p className="text-base text-[#555665]">Proposals Rejected</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-4 gap-5 mt-8">
-                        <div
-                            className="group p-4 rounded shadow text-white flex justify-between items-end relative overflow-hidden  cursor-pointer"
-                            style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }}
-                        >
-                            <div className="relative z-10">
-                                <p>Total Proposals</p>
+                    {/* recent proposals */}
 
-                                <h2 className="text-2xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    {totalProposals}
-                                </h2>
-                            </div>
+                    <div>
 
-                            <IoFileTrayFull className="text-4xl mb-1" />
-                        </div>
-                        <div
-                            className="group p-4 rounded shadow text-white flex justify-between items-end relative overflow-hidden  cursor-pointer"
-                            style={{ background: "linear-gradient(135deg, #2d2d2d 0%, #0a0a0a 100%)" }}
-                        >
-                            <div className="relative z-10">
-                                <p>Accepted</p>
-
-                                <h2 className="text-2xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    {acceptedProposals}
-                                </h2>
-                            </div>
-                            <FcAcceptDatabase className="text-4xl mb-1" />
-                        </div>
-                        <div
-                            className="group p-4 rounded shadow text-white flex justify-between items-end  relative overflow-hidden  cursor-pointer"
-                            style={{ background: "linear-gradient(135deg, #1a1a1a 0%, #3d3d3d 100%)" }}
-                        >
-                            <div className="relative z-10">
-                                <p>Sent</p>
-
-                                <h2 className="text-2xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    {sentingProposals}
-                                </h2>
-                            </div>
-                            <HiPresentationChartLine className="text-4xl mb-1"/>
-
-                        </div>
-                        <div
-                            className="group p-4 rounded shadow text-white flex justify-between items-end  relative overflow-hidden  cursor-pointer"
-                            style={{ background: "linear-gradient(135deg, #3d3d3d 0%, #1a1a1a 100%)" }}
-                        >
-                            <div className="relative z-10">
-                                <p>Rejected</p>
-
-                                <h2 className="text-2xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    {rejectedProposals}
-                                </h2>
-                            </div>
-                            <MdOutlineSmsFailed className="text-4xl mb-1"/>
-                        </div>
-
-
-
-                    </div>
-
-                    <div className="bg-white mt-10 p-5 rounded shadow">
-                        <h2 className="text-lg font-semibold mb-4">
-                            Recent Proposals
+                        <h2 className="text-xl font-semibold text-black mb-5">
+                            Proposals
                         </h2>
 
-                        <table className="w-full text-sm">
-                            <thead className="border-b text-gray-500">
-                                <tr>
-                                    <th className="text-left p-2">Project</th>
-                                    <th className="text-left p-2">Client</th>
-                                    <th className="text-left p-2">Status</th>
-                                    <th className="text-left p-2">Date</th>
-                                </tr>
-                            </thead>
+                        <div className="grid grid-cols-4 gap-[29px] max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
+                            {/* filter panel */}
+                            <div className="flex flex-col justify-between gap-6 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] h-full">
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-medium text-[#555665]">Project / Client Name</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Search Project / Client Name"
+                                        className="px-4 py-2 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] focus:outline-none"
 
-                            <tbody>
-                                {proposalData.slice(-4).map((item) => (
-                                    <tr key={item.id} className="border-b">
-                                        <td className="p-2">{item.project_name}</td>
-                                        <td className="p-2 text-gray-500">{item.client_name}</td>
-                                        <td className="p-2">
-                                            <span className={`${getStatusStyle(item.status)} px-2 py-1 rounded text-xs`}>
-                                                {item.status}
-                                            </span>
-                                        </td>
-                                        <td className="p-2 text-gray-500">{item.created_at.slice(0, 10)}</td>
-                                    </tr>
+                                        onChange={(e) => setSearchInput(e.target.value)}
+                                    />
+
+                                </div>
+
+                                {/* <div className="flex flex-col gap-2">
+        <label className="text-sm font-medium text-[#555665]">Client Name</label>
+        <input
+            type="text"
+            placeholder="Search Client Name"
+            className="px-4 py-2 rounded-[8px] border border-[#e7e7eb] text-sm text-[#3f4050] focus:outline-none"
+        />
+    </div> */}
+
+                                <div className="flex gap-6">
+
+                                    <div className="flex flex-col gap-2 w-1/2">
+                                        <label className="text-sm font-medium text-[#555665]">
+                                            Proposal Add Date
+                                        </label>
+
+                                        <input
+                                            type="date"
+                                            className="w-full px-4 py-2 rounded-[8px] border-2 border-[#d9dce8] text-sm"
+                                            onChange={(e) => setDateInput(e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="flex flex-col gap-2 w-1/2">
+                                        <label className="text-sm font-medium text-[#555665]">
+                                            Status
+                                        </label>
+
+                                        <select className="w-full px-4 py-2 rounded-[8px] border-2 border-[#d9dce8] text-sm"
+                                            onChange={(e) => setStatusInput(e.target.value)}>
+                                            <option>All Status</option>
+                                            <option>Draft</option>
+                                            <option>Sent</option>
+                                            <option>Accepted</option>
+                                            <option>Rejected</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+
+
+                                <div className="flex gap-3">
+                                    <button
+                                        type="button"
+                                        className="flex-1 px-5 py-2 rounded-[8px] border-2 border-[#d9dce8] text-sm font-medium text-[#555665] hover:bg-[#f9fafc]"
+                                        onClick={() => {
+                                            // Clear input fields
+                                            setSearchInput("");
+                                            setDateInput("");
+                                            setStatusInput("All Status");
+
+                                            // Clear applied filters
+                                            setSearch("");
+                                            setFilterDate("");
+                                            setStatusFilter("All Status");
+
+                                            // Go back to first page
+                                            setCurrentPage(1);
+                                        }}
+                                    >
+                                        Clear
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="flex-1 px-5 py-2 rounded-[8px] text-sm font-medium text-white bg-[#576aff] rounded-[4px] no-underline hover:bg-[#3d52f2] transition-colors whitespace-nowrap" onClick={() => {
+                                            setSearch(searchInput);
+                                            setStatusFilter(statusInput);
+                                            setFilterDate(dateInput);
+                                            setCurrentPage(1);
+                                        }}
+                                    >
+                                        Filter
+                                    </button>
+
+                                </div>
+
+                            </div>
+                            {currentProposal.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="flex flex-col items-start gap-[14px] p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.25)]"
+                                >
+                                    <h3 className="text-lg font-semibold text-black">{item.project_name}</h3>
+
+                                    <dl className="flex flex-col gap-5 w-full">
+                                        <div className="flex flex-col gap-1">
+                                            <dt className="text-sm font-medium text-[#555665]">Client Name:</dt>
+                                            <dd className="text-sm text-[#818293]">{item.client_name}</dd>
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <dt className="text-sm font-medium text-[#555665]">Proposal Ad Date:</dt>
+                                            <dd className="text-sm text-[#818293]">{item.created_at.slice(0, 10)}</dd>
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <dt className="text-sm font-medium text-[#555665]">Status</dt>
+                                            <dd>
+                                                <span className={`${getStatusStyle(item.status)} inline-flex justify-center items-center px-[10px] py-[10px] text-sm font-medium rounded-[5px]`}>
+                                                    {item.status}
+                                                </span>
+                                            </dd>
+                                        </div>
+                                    </dl>
+                                </div>
+
+                            ))}
+
+                        </div>
+                        <div className="flex items-center justify-between mt-10">
+
+                            {/* Left Side */}
+                            <div className="px-4 py-2 bg-white border border-[#e7e7eb] rounded-lg text-sm text-[#555665] shadow-sm">
+                                Showing{" "}
+                                <span className="font-semibold">{firstIndex + 1}</span>{" "}
+                                to{" "}
+                                <span className="font-semibold">
+                                    {Math.min(lastIndex, filterProposal.length)}
+                                </span>{" "}
+                                of{" "}
+                                <span className="font-semibold">{filterProposal.length}</span>{" "}
+                                Entries
+                            </div>
+
+                            {/* Right Side */}
+                            <div className="flex items-center gap-2">
+
+                                <button
+                                    onClick={() => setCurrentPage(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff]"
+                                >
+                                    &#10094;
+                                </button>
+
+                                {Array.from({ length: totalPages }, (_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setCurrentPage(index + 1)}
+                                        className={`w-10 h-10 rounded-lg text-sm font-medium transition
+          ${currentPage === index + 1
+                                                ? "bg-[#576aff] text-white"
+                                                : "bg-white border border-[#d9dce8] text-[#555665] hover:bg-[#f5f7ff]"
+                                            }`}
+                                    >
+                                        {index + 1}
+                                    </button>
                                 ))}
 
+                                <button
+                                    onClick={() => setCurrentPage(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                    className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff]"
+                                >
+                                    &#10095;
+                                </button>
 
+                            </div>
 
-
-                            </tbody>
-                        </table>
+                        </div>
                     </div>
 
                 </div>

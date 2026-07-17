@@ -21,6 +21,10 @@ function ProposalViewer() {
     const [uploadedFile, setUploadedFile] = useState(null)
     const [loading, setLoading] = useState(false)
 
+    // popup state (replaces window.confirm / alert)
+    const [showConfirmModal, setShowConfirmModal] = useState(false)
+    const [alertMessage, setAlertMessage] = useState('')
+
     const startDrawing = (e) => {
         const canvas = canvasRef.current
         const ctx = canvas.getContext('2d')
@@ -58,68 +62,100 @@ function ProposalViewer() {
         return canvas.toDataURL('image/png')
     }
 
-   const handleSubmit = async () => {
-    if (!agreed || !decision) {
-        alert('Please fill all fields and accept the terms.')
-        return
+    // Step 1: validate and open confirm popup (was: window.confirm)
+    const handleSubmit = () => {
+        if (!agreed || !decision) {
+            setAlertMessage('Please fill all fields and accept the terms.')
+            return
+        }
+        setShowConfirmModal(true)
     }
 
-    const confirmed = window.confirm("Are you sure you want to submit your decision?")
-    if (!confirmed) return
+    // Step 2: runs after user confirms in the popup (same body as before)
+    const doSubmit = async () => {
+        setShowConfirmModal(false)
+        setLoading(true)
+        try {
+            let response
 
-    setLoading(true)
-    try {
-        let response
+            if (decision === 'Rejected') {
+                response = await submitSignatureAPI(
+                    { proposalId: proposal.id, decision: 'Rejected' },
+                    { 'Content-Type': 'application/json' }
+                )
+            } else if (signatureMethod === 'draw') {
+                const signatureBase64 = getSignatureImage()
+                response = await submitSignatureAPI(
+                    { proposalId: proposal.id, decision, signatureMethod, signatureBase64 },
+                    { 'Content-Type': 'application/json' }
+                )
+            } else if (signatureMethod === 'upload') {
+                const fd = new FormData()
+                fd.append('proposalId', proposal.id)
+                fd.append('decision', decision)
+                fd.append('signatureMethod', 'upload')
+                fd.append('signatureFile', uploadedFile)
+                response = await submitSignatureAPI(fd, null)
+            }
+            console.log(response);
+            if (response.status === 201 || response.status === 200) {
+                navigate('/success', {
+                    state: {
+                        proposal,
+                        decision,
+                        signature: response.data.newSignature
+                    }
+                })
+            } else {
+                setAlertMessage(response.data.error)
+                setLoading(false)
+            }
 
-        if (decision === 'Rejected') {
-            response = await submitSignatureAPI(
-                { proposalId: proposal.id, decision: 'Rejected' },
-                { 'Content-Type': 'application/json' }
-            )
-        } else if (signatureMethod === 'draw') {
-            const signatureBase64 = getSignatureImage()
-            response = await submitSignatureAPI(
-                { proposalId: proposal.id, decision, signatureMethod, signatureBase64 },
-                { 'Content-Type': 'application/json' }
-            )
-        } else if (signatureMethod === 'upload') {
-            const fd = new FormData()
-            fd.append('proposalId', proposal.id)
-            fd.append('decision', decision)
-            fd.append('signatureMethod', 'upload')
-            fd.append('signatureFile', uploadedFile)
-            response = await submitSignatureAPI(fd, null)
-        }
-        console.log(response);
-        if (response.status === 201 || response.status === 200) {
-            navigate('/success', {
-                state: {
-                    proposal,
-                    decision,
-                    signature: response.data.newSignature
-                }
-            })
-        } else {
-            alert(response.data.error)
+        } catch (err) {
+            setAlertMessage('Something went wrong.')
             setLoading(false)
         }
-
-    } catch (err) {
-        alert('Something went wrong.')
-        setLoading(false)
     }
-}
+
     if (!proposal) {
         return (
-            <div className="min-h-screen bg-blue-50 flex items-center justify-center">
+            <div
+                className="min-h-screen font-['DM_Sans',sans-serif] flex items-center justify-center"
+                style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}
+            >
                 <p className="text-gray-500"></p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-blue-50">
-            <Topbar />
+        <div
+            className="min-h-screen font-['DM_Sans',sans-serif]"
+            style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}
+        >
+            <header className="flex items-center justify-between w-full shrink-0 px-[164px] py-[26px] max-[1639px]:px-12 max-[1200px]:px-10 max-[640px]:px-5 max-[640px]:flex-col max-[640px]:gap-5">
+                <a href="#" aria-label="ProposalHub home">
+                    <img src="/icons/logo.svg" alt="ProposalHub" className="h-11 w-auto" />
+                </a>
+                <nav className="flex items-center gap-4" aria-label="Social media links">
+                    <a href="https://www.facebook.com/mindbeesteam/" aria-label="Facebook">
+                        <img src="/icons/facebook.svg" alt="Facebook" className="w-5 h-5 hover:opacity-70" />
+                    </a>
+                    <a href="https://www.instagram.com/mindbeesdigital" aria-label="Instagram">
+                        <img src="/icons/instagram.svg" alt="Instagram" className="w-5 h-5 hover:opacity-70" />
+                    </a>
+                    <a href="https://x.com/MindbeesDigital" aria-label="Twitter">
+                        <img src="/icons/twitter.svg" alt="Twitter" className="w-5 h-5 hover:opacity-70" />
+                    </a>
+                    <a href="https://www.linkedin.com/company/mindbees" aria-label="LinkedIn">
+                        <img src="/icons/linkedin.svg" alt="LinkedIn" className="w-5 h-5 hover:opacity-70" />
+                    </a>
+                    <a href="https://in.pinterest.com/mindbeesdigital/" aria-label="Pinterest">
+                        <img src="/icons/pinterest.svg" alt="Pinterest" className="w-5 h-5 hover:opacity-70" />
+                    </a>
+                </nav>
+            </header>
+
             <div
   className="max-w-[95vw] mx-auto px-4 py-8 flex gap-6 items-start"
   style={{ height: "calc(100vh - 60px)" }}
@@ -127,7 +163,7 @@ function ProposalViewer() {
 
                <div className="w-[45%] h-[84vh] overflow-y-auto pr-2">
 
-                    <div className="bg-white rounded-lg shadow p-6">
+                    <div className="bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] p-6">
                         <div className="flex justify-between items-start mb-4">
                             <div>
                                 <h2 className="text-xl font-semibold">{proposal.project_name}</h2>
@@ -167,7 +203,7 @@ function ProposalViewer() {
                                 <label className="text-xs text-gray-500 mb-1 block">Client Name</label>
                                 <input
                                     type="text"
-                                    className="border p-2 rounded w-full text-sm focus:outline-none focus:border-black"
+                                    className="border border-[#c3c5d0] p-2 rounded-[4px] w-full text-sm focus:outline-none focus:border-[#576aff]"
                                     value={proposal?.client_name}
                                     disabled
                                 />
@@ -176,7 +212,7 @@ function ProposalViewer() {
                                 <label className="text-xs text-gray-500 mb-1 block">Client Email</label>
                                 <input
                                     type="email"
-                                    className="border p-2 rounded w-full text-sm focus:outline-none focus:border-black"
+                                    className="border border-[#c3c5d0] p-2 rounded-[4px] w-full text-sm focus:outline-none focus:border-[#576aff]"
                                     value={proposal?.client_email}
                                     disabled
                                 />
@@ -190,10 +226,10 @@ function ProposalViewer() {
                                 <div
                                     onClick={() => setSignatureMethod('draw')}
                                     className={`flex items-center gap-3 border rounded-lg p-3 mb-2 cursor-pointer transition-all
-                                ${signatureMethod === 'draw' ? 'border-black bg-gray-50' : 'border-gray-200'}`}
+                                ${signatureMethod === 'draw' ? 'border-[#576aff] bg-[#f7f7fb]' : 'border-gray-200'}`}
                                 >
                                     <div className={`w-8 h-8 rounded flex items-center justify-center text-sm
-                                ${signatureMethod === 'draw' ? 'bg-black text-white' : 'bg-gray-100 text-gray-500'}`}>
+                                ${signatureMethod === 'draw' ? 'bg-[#576aff] text-white' : 'bg-gray-100 text-gray-500'}`}>
                                         <FaPencilAlt />
                                     </div>
                                     <div>
@@ -205,10 +241,10 @@ function ProposalViewer() {
                                 <div
                                     onClick={() => setSignatureMethod('upload')}
                                     className={`flex items-center gap-3 border rounded-lg p-3 mb-3 cursor-pointer transition-all
-                                ${signatureMethod === 'upload' ? 'border-black bg-gray-50' : 'border-gray-200'}`}
+                                ${signatureMethod === 'upload' ? 'border-[#576aff] bg-[#f7f7fb]' : 'border-gray-200'}`}
                                 >
                                     <div className={`w-8 h-8 rounded flex items-center justify-center text-sm
-                                ${signatureMethod === 'upload' ? 'bg-black text-white' : 'bg-gray-100 text-gray-500'}`}>
+                                ${signatureMethod === 'upload' ? 'bg-[#576aff] text-white' : 'bg-gray-100 text-gray-500'}`}>
                                         <FaCloudUploadAlt />
                                     </div>
                                     <div>
@@ -265,7 +301,7 @@ function ProposalViewer() {
                                 <select
                                     value={decision}
                                     onChange={(e) => setDecision(e.target.value)}
-                                    className="w-full border p-2 rounded text-sm focus:outline-none focus:border-black"
+                                    className="w-full border border-[#c3c5d0] p-2 rounded-[4px] text-sm focus:outline-none focus:border-[#576aff]"
                                 >
                                     <option value="">-- Select Decision --</option>
                                     <option value="Rejected">Reject Proposal</option>
@@ -286,10 +322,7 @@ function ProposalViewer() {
                         </div>
                         <button
                             onClick={handleSubmit}
-                            className="w-full text-white py-2 rounded font-medium cursor-pointer transition-all active:scale-[0.98]"
-                            style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }}
-                            onMouseEnter={e => e.target.style.background = "linear-gradient(145deg, #333333 0%, #555555 100%)"}
-                            onMouseLeave={e => e.target.style.background = "linear-gradient(145deg, #111111 0%, #333333 100%)"}
+                            className="w-full text-white py-2 rounded-[3px] font-bold cursor-pointer transition-colors bg-[#576aff] hover:bg-[#3d52f2] active:scale-[0.995]"
                         >
                             {loading ? 'Submitting...' : 'Submit Report'}
                             
@@ -305,7 +338,7 @@ function ProposalViewer() {
                 </div>
                 <div className="w-[55%] flex flex-col">
                     {proposal.document_url ? (
-                        <div className="bg-white rounded-lg shadow p-4 flex flex-col h-full">
+                        <div className="bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] p-4 flex flex-col h-full">
                             <h3 className="font-medium mb-3">Proposal Document</h3>
 <iframe
     src={proposal.document_url}
@@ -317,30 +350,56 @@ function ProposalViewer() {
                            
                         </div>
                     ) : (
-                        <div className="bg-white rounded-lg shadow p-6 flex items-center justify-center h-FULL">
+                        <div className="bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] p-6 flex items-center justify-center h-FULL">
                             <p className="text-gray-400 text-sm">No document attached to this proposal.</p>
                         </div>
                     )}
                 </div>
 
             </div>
+
+            {/* Confirm popup (replaces window.confirm) */}
+            {showConfirmModal && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
+                    <div className="bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] w-full max-w-sm p-6 text-center">
+                        <h3 className="text-lg font-semibold text-[#1e1e21] mb-2">Confirm Submission</h3>
+                        <p className="text-sm text-gray-500 mb-6">
+                            Are you sure you want to submit your decision?
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowConfirmModal(false)}
+                                className="flex-1 py-2 rounded-[3px] font-medium border border-[#c3c5d0] text-[#555665] cursor-pointer transition-colors hover:bg-gray-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={doSubmit}
+                                className="flex-1 py-2 rounded-[3px] font-bold text-white bg-[#576aff] cursor-pointer transition-colors hover:bg-[#3d52f2]"
+                            >
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Alert popup (replaces alert()) */}
+            {alertMessage && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
+                    <div className="bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] w-full max-w-sm p-6 text-center">
+                        <p className="text-sm text-[#1e1e21] mb-6">{alertMessage}</p>
+                        <button
+                            onClick={() => setAlertMessage('')}
+                            className="w-full py-2 rounded-[3px] font-bold text-white bg-[#576aff] cursor-pointer transition-colors hover:bg-[#3d52f2]"
+                        >
+                            OK
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
-
-const Topbar = () => (
-    <div className="bg-black px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-            <div className="bg-white rounded-md p-1">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path d="M9 12h6M9 16h6M9 8h3M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"
-                        stroke="#000000" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-            </div>
-            <span className="text-white font-medium text-sm">ProposalHub</span>
-        </div>
-        <span className="text-blue-200 text-xs">Secure proposal viewer</span>
-    </div>
-);
 
 export default ProposalViewer;

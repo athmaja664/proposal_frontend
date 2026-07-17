@@ -83,23 +83,37 @@ if (decision === 'Accepted' && signature?.signature_image_url) {
 }
 
     return (
-        <div className="min-h-screen bg-blue-50">
+        <div
+            className="min-h-screen font-['DM_Sans',sans-serif]"
+            style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}
+        >
             <Toaster position="top-center" />
-            <div className="bg-black px-6 py-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <div className="bg-white rounded-md p-1">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                            <path d="M9 12h6M9 16h6M9 8h3M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"
-                                stroke="#000000" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                    </div>
-                    <span className="text-white font-medium text-sm">ProposalHub</span>
-                </div>
-                <span className="text-blue-200 text-xs">Secure proposal viewer</span>
-            </div>
+
+            <header className="flex items-center justify-between w-full shrink-0 px-[164px] py-[26px] max-[1639px]:px-12 max-[1200px]:px-10 max-[640px]:px-5 max-[640px]:flex-col max-[640px]:gap-5">
+                <a href="#" aria-label="ProposalHub home">
+                    <img src="/icons/logo.svg" alt="ProposalHub" className="h-11 w-auto" />
+                </a>
+                <nav className="flex items-center gap-4" aria-label="Social media links">
+                    <a href="https://www.facebook.com/mindbeesteam/" aria-label="Facebook">
+                        <img src="/icons/facebook.svg" alt="Facebook" className="w-5 h-5 hover:opacity-70" />
+                    </a>
+                    <a href="https://www.instagram.com/mindbeesdigital" aria-label="Instagram">
+                        <img src="/icons/instagram.svg" alt="Instagram" className="w-5 h-5 hover:opacity-70" />
+                    </a>
+                    <a href="https://x.com/MindbeesDigital" aria-label="Twitter">
+                        <img src="/icons/twitter.svg" alt="Twitter" className="w-5 h-5 hover:opacity-70" />
+                    </a>
+                    <a href="https://www.linkedin.com/company/mindbees" aria-label="LinkedIn">
+                        <img src="/icons/linkedin.svg" alt="LinkedIn" className="w-5 h-5 hover:opacity-70" />
+                    </a>
+                    <a href="https://in.pinterest.com/mindbeesdigital/" aria-label="Pinterest">
+                        <img src="/icons/pinterest.svg" alt="Pinterest" className="w-5 h-5 hover:opacity-70" />
+                    </a>
+                </nav>
+            </header>
 
             <div className="flex items-center justify-center py-16 px-4">
-                <div className="bg-white rounded-lg shadow p-8 w-full max-w-md text-center">
+                <div className="bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] p-8 w-full max-w-md text-center">
 
                     <div className={`${decision === 'Rejected' ? 'bg-red-100' : 'bg-green-100'} rounded-full w-14 h-14 flex items-center justify-center mx-auto mb-4`}>
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -111,12 +125,12 @@ if (decision === 'Accepted' && signature?.signature_image_url) {
                         </svg>
                     </div>
 
-                    <h2 className="text-xl font-semibold mb-1">Proposal {decision}!</h2>
+                    <h2 className="text-xl font-semibold text-[#1e1e21] mb-1">Proposal {decision}!</h2>
                     <p className="text-gray-500 text-sm mb-6">
                         Your response has been recorded. The sender has been notified.
                     </p>
 
-                    <div className="bg-gray-50 rounded p-4 text-left space-y-2">
+                    <div className="bg-[#f7f7fb] rounded p-4 text-left space-y-2">
                         <div className="flex justify-between text-sm">
                             <span className="text-gray-500">Proposal</span>
                             <span className="font-medium">{proposal?.project_name}</span>
@@ -146,10 +160,7 @@ if (decision === 'Accepted' && signature?.signature_image_url) {
                     </p>
                     <button
                         onClick={generatePDF}
-                        className="mt-5 w-full bg-black text-white py-2 rounded font-medium cursor-pointer text-sm" style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }} 
-                        onMouseEnter={e => e.target.style.background = "linear-gradient(145deg, #333333 0%, #555555 100%)"}
-                            onMouseLeave={e => e.target.style.background = "linear-gradient(145deg, #111111 0%, #333333 100%)"}
-                        
+                        className="mt-5 w-full text-white py-2 rounded-[3px] font-bold cursor-pointer text-sm transition-colors bg-[#576aff] hover:bg-[#3d52f2] active:scale-[0.995]"
                     >
                         Download PDF Certificate
                     </button>

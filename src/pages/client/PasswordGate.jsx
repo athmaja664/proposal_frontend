@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getProposalByTokenAPI, verifyPasswordAPI } from "../../../services/allAPI";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import toast, { Toaster } from 'react-hot-toast'
+
 function PasswordGate() {
     const { token } = useParams();
     const navigate = useNavigate();
@@ -28,47 +29,103 @@ function PasswordGate() {
     };
 
     const handleVerifyPassword = async () => {
-    if (!password) {
-        toast.error("Please fill the Form");
-        return;
-    }
-    setVerify(true);
-    const response = await verifyPasswordAPI({ token, password });
-    if (response.status === 200) {
-        if (response.data.alreadyResponded) {
-            toast.success('Welcome back')
-            setTimeout(() => {
-                navigate('/success', {
-                    state: {
-                        proposal: response.data.proposal,
-                        decision: response.data.decision,
-                        signature: response.data.signature 
-                    }
-                });
-            }, 1000)
-        } else {
-            toast.success('Welcome')
-            setTimeout(() => {
-                navigate('/proposalview', { state: { proposal: response.data.proposal } });
-            }, 1000)
+        if (!password) {
+            toast.error("Please fill the Form");
+            return;
         }
-    } else {
-        toast.error(response.data.message || 'Invalid email or password')
-        setVerify(false);
-    }
-};
+        setVerify(true);
+        const response = await verifyPasswordAPI({ token, password });
+        if (response.status === 200) {
+            if (response.data.alreadyResponded) {
+                toast.success('Welcome back')
+                setTimeout(() => {
+                    navigate('/success', {
+                        state: {
+                            proposal: response.data.proposal,
+                            decision: response.data.decision,
+                            signature: response.data.signature
+                        }
+                    });
+                }, 1000)
+            } else {
+                toast.success('Welcome')
+                setTimeout(() => {
+                    navigate('/proposalview', { state: { proposal: response.data.proposal } });
+                }, 1000)
+            }
+        } else {
+            toast.error(response.data.message || 'Invalid email or password')
+            setVerify(false);
+        }
+    };
 
     // Loading state
     if (loading) {
         return (
-            <div className="min-h-screen bg-blue-50">
+            <div
+                className="min-h-screen font-['DM_Sans',sans-serif]"
+                style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}
+            >
                 <Toaster position="top-center" />
-                <Topbar />
-                <div className="flex items-center justify-center py-16 px-4">
-                    <div className="bg-white rounded-lg shadow p-8 w-full max-w-sm text-center">
-                        <div className="w-8 h-8 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto mb-3"></div>
-                        <p className="text-gray-500 text-sm">Checking link...</p>
-                    </div>
+                <div className="flex flex-col items-center gap-[104px] w-full max-w-[1920px] min-h-screen mx-auto px-[164px] pt-[26px] pb-[167px] max-[1639px]:px-12 max-[1639px]:gap-[72px] max-[1200px]:px-10 max-[1200px]:pb-16 max-[640px]:px-5 max-[640px]:pb-12">
+
+                    <header className="flex items-center justify-between w-full shrink-0 max-[640px]:flex-col max-[640px]:gap-5">
+                        <a href="#" aria-label="ProposalHub home">
+                            <img src="/icons/logo.svg" alt="ProposalHub" className="h-11 w-auto" />
+                        </a>
+                        <nav className="flex items-center gap-4" aria-label="Social media links">
+                            <a href="https://www.facebook.com/mindbeesteam/" aria-label="Facebook">
+                                <img src="/icons/facebook.svg" alt="Facebook" className="w-5 h-5 hover:opacity-70" />
+                            </a>
+                            <a href="https://www.instagram.com/mindbeesdigital" aria-label="Instagram">
+                                <img src="/icons/instagram.svg" alt="Instagram" className="w-5 h-5 hover:opacity-70" />
+                            </a>
+                            <a href="https://x.com/MindbeesDigital" aria-label="Twitter">
+                                <img src="/icons/twitter.svg" alt="Twitter" className="w-5 h-5 hover:opacity-70" />
+                            </a>
+                            <a href="https://www.linkedin.com/company/mindbees" aria-label="LinkedIn">
+                                <img src="/icons/linkedin.svg" alt="LinkedIn" className="w-5 h-5 hover:opacity-70" />
+                            </a>
+                            <a href="https://in.pinterest.com/mindbeesdigital/" aria-label="Pinterest">
+                                <img src="/icons/pinterest.svg" alt="Pinterest" className="w-5 h-5 hover:opacity-70" />
+                            </a>
+                        </nav>
+                    </header>
+
+                    <main className="flex justify-center w-full">
+                        <div className="flex justify-between items-center w-[1286px] max-w-full mx-auto max-[1200px]:flex-col max-[1200px]:gap-12">
+
+                            <section className="flex flex-col flex-[0_0_585px] max-w-[585px] w-full max-[1200px]:hidden" aria-hidden="true">
+                                <h1 className="mb-[26px] text-[46px] font-bold tracking-[-1.38px] leading-normal text-black">
+                                    Proposal
+                                </h1>
+                                <p className="w-full mb-[26px] text-base font-normal leading-normal text-[#626367] capitalize">
+                                    You've received a proposal for your review
+                                </p>
+                                <p className="w-full mb-0 text-base font-normal leading-normal text-[#626367] capitalize">
+                                    Enter the password shared with you to view the full details and respond
+                                </p>
+                                <figure className="flex items-end mt-8 w-full">
+                                    <img
+                                        src="/Images/login_image.svg"
+                                        alt="Illustration of a person reviewing proposals on a computer screen"
+                                        className="w-full h-auto object-contain object-bottom"
+                                    />
+                                </figure>
+                            </section>
+
+                            <section
+                                className="flex flex-col items-start self-center flex-[0_0_496px] w-[496px] max-w-full px-[46px] py-[56px] bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] max-[1200px]:flex-none max-[1200px]:w-full max-[1200px]:max-w-[496px] max-[640px]:px-7 max-[640px]:py-10"
+                                aria-labelledby="gate-loading-title"
+                            >
+                                <div className="flex flex-col items-center justify-center self-stretch gap-4 text-center py-8">
+                                    <div className="w-8 h-8 border-4 border-[#e5e7eb] border-t-[#576aff] rounded-full animate-spin"></div>
+                                    <p id="gate-loading-title" className="text-[#818293] text-sm">Checking link...</p>
+                                </div>
+                            </section>
+
+                        </div>
+                    </main>
                 </div>
             </div>
         );
@@ -77,19 +134,75 @@ function PasswordGate() {
     // Error state
     if (error) {
         return (
-            <div className="min-h-screen bg-blue-50">
-                   <Toaster position="top-center" />
-                <Topbar />
-                <div className="flex items-center justify-center py-16 px-4">
-                    <div className="bg-white rounded-lg shadow p-8 w-full max-w-sm text-center">
-                        <div className="bg-red-100 rounded-full w-14 h-14 flex items-center justify-center mx-auto mb-4">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                                <path d="M6 18L18 6M6 6l12 12" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" />
-                            </svg>
+            <div
+                className="min-h-screen font-['DM_Sans',sans-serif]"
+                style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}
+            >
+                <Toaster position="top-center" />
+                <div className="flex flex-col items-center gap-[104px] w-full max-w-[1920px] min-h-screen mx-auto px-[164px] pt-[26px] pb-[167px] max-[1639px]:px-12 max-[1639px]:gap-[72px] max-[1200px]:px-10 max-[1200px]:pb-16 max-[640px]:px-5 max-[640px]:pb-12">
+
+                    <header className="flex items-center justify-between w-full shrink-0 max-[640px]:flex-col max-[640px]:gap-5">
+                        <a href="#" aria-label="ProposalHub home">
+                            <img src="/icons/logo.svg" alt="ProposalHub" className="h-11 w-auto" />
+                        </a>
+                        <nav className="flex items-center gap-4" aria-label="Social media links">
+                            <a href="https://www.facebook.com/mindbeesteam/" aria-label="Facebook">
+                                <img src="/icons/facebook.svg" alt="Facebook" className="w-5 h-5 hover:opacity-70" />
+                            </a>
+                            <a href="https://www.instagram.com/mindbeesdigital" aria-label="Instagram">
+                                <img src="/icons/instagram.svg" alt="Instagram" className="w-5 h-5 hover:opacity-70" />
+                            </a>
+                            <a href="https://x.com/MindbeesDigital" aria-label="Twitter">
+                                <img src="/icons/twitter.svg" alt="Twitter" className="w-5 h-5 hover:opacity-70" />
+                            </a>
+                            <a href="https://www.linkedin.com/company/mindbees" aria-label="LinkedIn">
+                                <img src="/icons/linkedin.svg" alt="LinkedIn" className="w-5 h-5 hover:opacity-70" />
+                            </a>
+                            <a href="https://in.pinterest.com/mindbeesdigital/" aria-label="Pinterest">
+                                <img src="/icons/pinterest.svg" alt="Pinterest" className="w-5 h-5 hover:opacity-70" />
+                            </a>
+                        </nav>
+                    </header>
+
+                    <main className="flex justify-center w-full">
+                        <div className="flex justify-between items-center w-[1286px] max-w-full mx-auto max-[1200px]:flex-col max-[1200px]:gap-12">
+
+                            <section className="flex flex-col flex-[0_0_585px] max-w-[585px] w-full max-[1200px]:hidden" aria-hidden="true">
+                                <h1 className="mb-[26px] text-[46px] font-bold tracking-[-1.38px] leading-normal text-black">
+                                    Proposal
+                                </h1>
+                                <p className="w-full mb-[26px] text-base font-normal leading-normal text-[#626367] capitalize">
+                                    You've received a proposal for your review
+                                </p>
+                                <p className="w-full mb-0 text-base font-normal leading-normal text-[#626367] capitalize">
+                                    Enter the password shared with you to view the full details and respond
+                                </p>
+                                <figure className="flex items-end mt-8 w-full">
+                                    <img
+                                        src="/Images/login_image.svg"
+                                        alt="Illustration of a person reviewing proposals on a computer screen"
+                                        className="w-full h-auto object-contain object-bottom"
+                                    />
+                                </figure>
+                            </section>
+
+                            <section
+                                className="flex flex-col items-start self-center flex-[0_0_496px] w-[496px] max-w-full px-[46px] py-[56px] bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] max-[1200px]:flex-none max-[1200px]:w-full max-[1200px]:max-w-[496px] max-[640px]:px-7 max-[640px]:py-10"
+                                aria-labelledby="gate-error-title"
+                            >
+                                <div className="flex flex-col items-center justify-center self-stretch gap-2 text-center py-8">
+                                    <div className="bg-red-100 rounded-full w-14 h-14 flex items-center justify-center mb-2">
+                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                                            <path d="M6 18L18 6M6 6l12 12" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" />
+                                        </svg>
+                                    </div>
+                                    <h2 id="gate-error-title" className="text-[20px] font-semibold text-[#1e1e21]">{error}</h2>
+                                    <p className="text-[#818293] text-sm">This link is invalid, expired or revoked.</p>
+                                </div>
+                            </section>
+
                         </div>
-                        <h2 className="text-lg font-semibold mb-1">{error}</h2>
-                        <p className="text-gray-500 text-sm">This link is invalid, expired or revoked.</p>
-                    </div>
+                    </main>
                 </div>
             </div>
         );
@@ -97,65 +210,113 @@ function PasswordGate() {
 
     // Main state
     return (
-        <div className="min-h-screen bg-blue-50">
+        <div
+            className="min-h-screen font-['DM_Sans',sans-serif]"
+            style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}
+        >
             <Toaster position="top-center" />
-            <Topbar />
-            <div className="flex items-center justify-center py-16 px-4">
-                <div className="bg-white rounded-lg shadow p-8 w-full max-w-sm text-center">
-                    <div className="bg-blue-100 rounded-full w-14 h-14 flex items-center justify-center mx-auto mb-4">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                            <path
-                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                                stroke="#000000" strokeWidth="2" strokeLinecap="round"
-                            />
-                        </svg>
-                    </div>
-                    <h2 className="text-lg font-semibold mb-1">This proposal is protected</h2>
-                    <p className="text-gray-500 text-sm mb-5">
-                        Enter the password shared by the sender to view this proposal.
-                    </p>
-                    <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 mb-4 bg-gray-50">
-                        <input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter password"
-                            className="flex-1 bg-transparent outline-none text-sm text-gray-700"
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <span
-                            className="text-gray-400 ml-2 cursor-pointer"
-                            onClick={() => setShowPassword(!showPassword)}
+            <div className="flex flex-col items-center gap-[104px] w-full max-w-[1920px] min-h-screen mx-auto px-[164px] pt-[26px] pb-[167px] max-[1639px]:px-12 max-[1639px]:gap-[72px] max-[1200px]:px-10 max-[1200px]:pb-16 max-[640px]:px-5 max-[640px]:pb-12">
+
+                <header className="flex items-center justify-between w-full shrink-0 max-[640px]:flex-col max-[640px]:gap-5">
+                    <a href="#" aria-label="ProposalHub home">
+                        <img src="/icons/logo.svg" alt="ProposalHub" className="h-11 w-auto" />
+                    </a>
+                    <nav className="flex items-center gap-4" aria-label="Social media links">
+                        <a href="https://www.facebook.com/mindbeesteam/" aria-label="Facebook">
+                            <img src="/icons/facebook.svg" alt="Facebook" className="w-5 h-5 hover:opacity-70" />
+                        </a>
+                        <a href="https://www.instagram.com/mindbeesdigital" aria-label="Instagram">
+                            <img src="/icons/instagram.svg" alt="Instagram" className="w-5 h-5 hover:opacity-70" />
+                        </a>
+                        <a href="https://x.com/MindbeesDigital" aria-label="Twitter">
+                            <img src="/icons/twitter.svg" alt="Twitter" className="w-5 h-5 hover:opacity-70" />
+                        </a>
+                        <a href="https://www.linkedin.com/company/mindbees" aria-label="LinkedIn">
+                            <img src="/icons/linkedin.svg" alt="LinkedIn" className="w-5 h-5 hover:opacity-70" />
+                        </a>
+                        <a href="https://in.pinterest.com/mindbeesdigital/" aria-label="Pinterest">
+                            <img src="/icons/pinterest.svg" alt="Pinterest" className="w-5 h-5 hover:opacity-70" />
+                        </a>
+                    </nav>
+                </header>
+
+                <main className="flex justify-center w-full">
+                    <div className="flex justify-between items-center w-[1286px] max-w-full mx-auto max-[1200px]:flex-col max-[1200px]:gap-12">
+
+                        <section className="flex flex-col flex-[0_0_585px] max-w-[585px] w-full max-[1200px]:hidden" aria-hidden="true">
+                            <h1 className="mb-[26px] text-[46px] font-bold tracking-[-1.38px] leading-normal text-black">
+                                Proposal
+                            </h1>
+                            <p className="w-full mb-[26px] text-base font-normal leading-normal text-[#626367] capitalize">
+                                You've received a proposal for your review
+                            </p>
+                            <p className="w-full mb-0 text-base font-normal leading-normal text-[#626367] capitalize">
+                                Enter the password shared with you to view the full details and respond
+                            </p>
+                            <figure className="flex items-end mt-8 w-full">
+                                <img
+                                    src="/Images/login_image.svg"
+                                    alt="Illustration of a person reviewing proposals on a computer screen"
+                                    className="w-full h-auto object-contain object-bottom"
+                                />
+                            </figure>
+                        </section>
+
+                        <section
+                            className="flex flex-col items-start self-center flex-[0_0_496px] w-[496px] max-w-full px-[46px] py-[56px] bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] max-[1200px]:flex-none max-[1200px]:w-full max-[1200px]:max-w-[496px] max-[640px]:px-7 max-[640px]:py-10"
+                            aria-labelledby="gate-title"
                         >
-                            {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-                        </span>
+                            <h2
+                                id="gate-title"
+                                className="self-stretch mb-8 text-[26px] font-semibold leading-normal text-[#1e1e21] text-center"
+                            >
+                                Unlock to View
+                            </h2>
+
+                            <div className="flex flex-col items-start self-stretch w-full gap-[10px]">
+                                <label className="block text-lg font-medium leading-normal text-[#555665]" htmlFor="gate-password">
+                                    Password
+                                </label>
+                                <div className="flex items-center gap-[10px] h-[54px] px-[10px] w-full bg-white border border-[#c3c5d0] rounded-[4px] transition-colors focus-within:border-[#576aff]">
+                                    <span className="flex-none w-6 h-6 text-[#818293]" aria-hidden="true">
+                                        <img src="/icons/lock.svg" alt="" className="w-7 h-7" />
+                                    </span>
+                                    <input
+                                        className="flex-1 w-full min-w-0 h-full text-base font-normal text-[#1e1e21] bg-transparent border-none outline-none placeholder:font-medium placeholder:text-[#818293]"
+                                        type={showPassword ? "text" : "password"}
+                                        id="gate-password"
+                                        name="password"
+                                        placeholder="Enter password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                    <span
+                                        className="text-[#818293] cursor-pointer"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={handleVerifyPassword}
+                                disabled={verify}
+                                className="flex items-center justify-center self-stretch w-[410px] h-[42px] mt-[28px] p-[10px] text-lg font-bold text-white bg-[#576aff] border-none rounded-[3px] cursor-pointer transition-colors hover:bg-[#3d52f2] active:scale-[0.995] disabled:opacity-70 disabled:cursor-not-allowed"
+                            >
+                                {verify ? 'Unlocking...' : 'Unlock Proposal'}
+                            </button>
+
+                            <p className="self-stretch text-center text-[#818293] text-xs mt-4">
+                                No account required to view this proposal
+                            </p>
+                        </section>
+
                     </div>
-                    <button
-                        onClick={handleVerifyPassword}
-                        disabled={verify}
-                        className="w-full text-white py-2 rounded font-medium cursor-pointer disabled:opacity-60"
-                        style={{ background: "linear-gradient(145deg, #111111 0%, #333333 100%)" }}
-                    >
-                        {verify ? 'Unlocking...' : 'Unlock Proposal'}
-                    </button>
-                    <p className="text-gray-400 text-xs mt-4">No account required to view this proposal</p>
-                </div>
+                </main>
             </div>
         </div>
     );
 }
-
-const Topbar = () => (
-    <div className="bg-black px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-            <div className="bg-white rounded-md p-1">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path d="M9 12h6M9 16h6M9 8h3M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"
-                        stroke="#060607" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-            </div>
-            <span className="text-white font-medium text-sm">ProposalHub</span>
-        </div>
-        <span className="text-blue-200 text-xs">Secure proposal viewer</span>
-    </div>
-);
 
 export default PasswordGate;

@@ -7,16 +7,34 @@ export const adminLoginAPI = async (reqBody) => {
   return await commonAPI('POST', `${serverURL}/api/adminlogin`, reqBody, {})
 }
 
+
+
+//FORGOT PASSWORD
+export const forgotPasswordAPI = async (reqBody, reqHeader) => {
+  return await commonAPI('POST', `${serverURL}/api/forgot-password`, reqBody, reqHeader)
+}
+
+//RESET PASSWORD
+export const resetPasswordAPI = async (token, reqBody) => {
+  return await commonAPI('POST', `${serverURL}/api/reset-password/${token}`, reqBody, {})
+}
 //ADD CLIENT
 export const addclientAPI = async (reqBody, reqHeader) => {
   return await commonAPI('POST', `${serverURL}/api/addclient`, reqBody, reqHeader)
 }
-
 //GET THE CLIENT FOR THE ADD PROJECT
 export const getclientAPI = async (reqHeader) => {
   return await commonAPI('GET', `${serverURL}/api/getclient`, {}, reqHeader)
 }
 
+//UPDATE CLIENT
+export const updateClientAPI = async (id, reqBody, reqHeader) => {
+  return await commonAPI('PUT', `${serverURL}/api/updateclient/${id}`, reqBody, reqHeader)
+}
+//DELETE CLIENT
+export const deleteClientAPI=async(id,reqHeader)=>{
+  return await commonAPI('DELETE',`${serverURL}/api/deleteclient/${id}`,{},reqHeader)
+}
 //ADD PROJECT
 export const addprojectAPI = async (reqBody, reqHeader) => {
   return await commonAPI('POST', `${serverURL}/api/addproject`, reqBody, reqHeader)
@@ -26,7 +44,6 @@ export const addprojectAPI = async (reqBody, reqHeader) => {
 export const getProjectAPI = async (reqHeader) => {
   return await commonAPI('GET', `${serverURL}/api/getproject`, {}, reqHeader)
 }
-
 
 //CREATE PROPOSAL
 export const createProposalAPI = async (reqBody, reqHeader) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { RiFileList3Fill } from "react-icons/ri";
 import { MdAccountCircle } from "react-icons/md";
 import { FiLogOut, FiEdit } from "react-icons/fi";
@@ -9,16 +9,20 @@ function Sidebar() {
   const [admin, setAdmin] = useState(null);
   const [showMenu, setShowMenu] = useState(false)
   const [showEditProfile, setShowEditProfile] = useState(false)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const navigate = useNavigate();
+  const location = useLocation();
   const menuRef = useRef(null)
 
-  useEffect(() => {
-  const adminData = localStorage.getItem("admin");
+  const isActive = (path) => location.pathname === path;
 
-  if (adminData && adminData !== "undefined") {
-    setAdmin(JSON.parse(adminData));
-  }
-}, []);
+  useEffect(() => {
+    const adminData = localStorage.getItem("admin");
+
+    if (adminData && adminData !== "undefined") {
+      setAdmin(JSON.parse(adminData));
+    }
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -37,68 +41,78 @@ function Sidebar() {
   }
 
   return (
-<div className="relative w-80 h-screen flex flex-col text-white sticky top-0">
+    <header className="flex items-center justify-between w-full px-10 py-6 bg-transparent">
 
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('/Images/sidebar_background.jpg')" }}
-      />
-      <div className="absolute inset-0 bg-black/60" />
+      <Link to="/dashboard" className="flex items-center gap-2 text-xl font-bold text-[#1e1e21] no-underline shrink-0" aria-label="ProposalHub home">
+        <img
+          src="/icons/logo.svg"
+          alt="ProposalHub"
+          className="h-11 w-auto"
+        />
+      </Link>
 
-      <div className="relative z-10 flex flex-col h-full">
-        <div className="p-5 text-2xl font-bold border-b border-white/20 tracking-wide flex items-center gap-2">
-          <RiFileList3Fill />
-          <span>ProposalHub</span>
-        </div>
+      <nav className="flex items-center gap-8 flex-wrap" aria-label="Main navigation">
+        <Link to="/dashboard" className={`text-[16px] font-normal no-underline transition-colors ${isActive('/dashboard') ? 'text-[#576aff] font-medium' : 'text-[#555665] hover:text-[#576aff]'}`}>
+          Dashboard
+        </Link>
+        <Link to="/proposals" className={`text-[16px] font-normal no-underline transition-colors ${isActive('/proposals') ? 'text-[#576aff] font-medium' : 'text-[#555665] hover:text-[#576aff]'}`}>
+          Proposal
+        </Link>
 
-        <div className="p-5 flex flex-col gap-5 text-[15px] font-medium">
-          <Link to="/dashboard" className="text-white/70 hover:text-white">
-            Dashboard
-          </Link>
-          <Link to="/auditlogs" className="text-white/70 hover:text-white">
-            AuditLogs
-          </Link>
-          <Link to="/proposals" className="text-white/70 hover:text-white">
-            Proposals
-          </Link>
-          <Link to="/createproposal" className="text-white/70 hover:text-white">
-            + New Proposal
-          </Link>
-        </div>
+        {/* <a href="/viewproposals" className="text-[16px] font-normal text-[#555665] hover:text-[#576aff] no-underline transition-colors">
+          View Proposals
+        </a> */}
+
+        <a href="/clients" className="text-[16px] font-normal text-[#555665] hover:text-[#576aff] no-underline transition-colors">
+          Client
+        </a>
+        <Link to="/auditlogs" className={`text-[16px] font-normal no-underline transition-colors ${isActive('/auditlogs') ? 'text-[#576aff] font-medium' : 'text-[#555665] hover:text-[#576aff]'}`}>
+          AuditLogs
+        </Link>
+        {/* TODO: no route yet for Setting — using placeholder until Athmaja provides the real path */}
+        {/* <a href="#" className="text-[16px] font-normal text-[#555665] hover:text-[#576aff] no-underline transition-colors">
+          Setting
+        </a> */}
+        <button
+          onClick={() => setShowLogoutConfirm(true)}
+          className="text-[16px] font-normal text-[#555665] hover:text-[#576aff] transition-colors bg-transparent border-none cursor-pointer p-0"
+        >
+          Logout
+        </button>
+      </nav>
+
+      <div className="flex items-center gap-5 shrink-0">
+        <Link
+          to="/createproposal"
+          className="inline-flex items-center justify-center gap-2 h-[45px] px-4 text-sm font-medium text-white bg-[#576aff] rounded-[4px] no-underline hover:bg-[#3d52f2] transition-colors whitespace-nowrap"
+        >
+          + New Proposal
+        </Link>
 
         {admin && (
-          <div className="mt-auto p-5 border-t border-white/20">
-            <div
-              ref={menuRef}
-              className="relative flex items-center gap-3 cursor-pointer"
-              onClick={() => setShowMenu(prev => !prev)}
-              onContextMenu={(e) => e.preventDefault()}
-            >
-              <button className="text-white/60 hover:text-white transition-all">
-                <MdAccountCircle size={28} />
-              </button>
-              <p className="text-sm font-semibold">{admin.name}</p>
+          <div
+            ref={menuRef}
+            className="relative flex items-center gap-2 cursor-pointer"
+            onClick={() => setShowMenu(prev => !prev)}
+            onContextMenu={(e) => e.preventDefault()}
+          >
+            <button className="text-[#818293] hover:text-[#576aff] transition-colors">
+              <MdAccountCircle size={30} />
+            </button>
 
-              {/* Dropdown Menu */}
-              {showMenu && (
-                <div className="absolute bottom-10 left-0 bg-white rounded-lg shadow-lg py-2 w-44 z-50 pt-2">
-                  <button
-                    onClick={() => { setShowEditProfile(true); setShowMenu(false) }}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <FiEdit size={14} />
-                    Edit Profile
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-gray-100"
-                  >
-                    <FiLogOut size={14} />
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
+            {/* Dropdown Menu */}
+            {showMenu && (
+              <div className="absolute top-11 right-0 bg-white rounded-lg shadow-lg py-2 w-44 z-50 border border-[#e4e4eb]">
+                <p className="px-4 py-2 text-sm font-semibold text-[#1e1e21] border-b border-[#e4e4eb]">{admin.name}</p>
+                <button
+                  onClick={() => { setShowEditProfile(true); setShowMenu(false) }}
+                  className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  <FiEdit size={14} />
+                  Edit Profile
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -114,7 +128,38 @@ function Sidebar() {
           }}
         />
       )}
-    </div>
+
+      {/* Logout Confirmation Popup */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[999]">
+          <div className="bg-white rounded-[16px] shadow-lg w-[360px] p-6">
+            <h3 className="text-lg font-semibold text-[#1e1e21] mb-2">
+              Log out?
+            </h3>
+            <p className="text-sm text-[#555665] mb-6">
+              Are you sure you want to log out of your account?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="px-4 py-2 text-sm font-medium text-[#555665] border-2 border-[#d9dce8] rounded-[8px] hover:bg-[#f9fafc] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowLogoutConfirm(false)
+                  handleLogout()
+                }}
+                className="px-4 py-2 text-sm font-medium text-white bg-[#576aff] rounded-[8px] hover:bg-[#3d52f2] transition-colors"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
   );
 }
 

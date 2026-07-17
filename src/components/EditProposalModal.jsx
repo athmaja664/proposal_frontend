@@ -27,17 +27,22 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
             toast.success('Proposal Updated')
             getProposals()
             setTimeout(() => {
-        onClose()
-    }, 1000)
+                onClose()
+            }, 1000)
         } else {
             toast.error(response.data.message)
         }
     }
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-[2px] flex items-center justify-center z-50 px-4">
             <Toaster position="top-center" />
-            <div className="bg-white p-6 rounded shadow w-[90vw] max-w-5xl flex gap-6">
+            <div
+                className="p-6 rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] w-[90vw] max-w-5xl flex gap-6"
+                style={{
+                    background: "url('/Images/background_img.svg') #ffffff center / cover no-repeat"
+                }}
+            >
 
                 {/* LEFT - Form */}
                 <div className="flex-1 flex flex-col">
@@ -114,10 +119,10 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
                     </div>
 
                     <div className="flex justify-end gap-3 mt-6">
-                        <button onClick={onClose} className="px-4 py-2 border rounded cursor-pointer">
+                        <button onClick={onClose} className="inline-flex items-center justify-center gap-2 h-[45px] px-4 text-sm font-medium text-white bg-[#576aff] rounded-[4px] no-underline hover:bg-[#3d52f2] transition-colors whitespace-nowrap">
                             Cancel
                         </button>
-                        <button onClick={handleUpdate} className="px-4 py-2 bg-black text-white rounded cursor-pointer">
+                        <button onClick={handleUpdate} className="inline-flex items-center justify-center gap-2 h-[45px] px-4 text-sm font-medium text-white bg-[#576aff] rounded-[4px] no-underline hover:bg-[#3d52f2] transition-colors whitespace-nowrap">
                             Update Proposal
                         </button>
                     </div>
@@ -134,20 +139,20 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
                         //     style={{ height: '520px' }}
                         //     title="PDF Preview"
                         // />
-//                         <iframe
-//     src={`https://docs.google.com/viewer?url=${encodeURIComponent(proposal.documentUrl)}&embedded=true`}
-//     width="100%"
-//     style={{ height: '520px' }}
-//     title="PDF Viewer"
-//     className="border rounded"
-// />
-<iframe
-    src={proposal.document_url}
-    width="100%"
-    style={{ height: '520px' }}
-    title="PDF Viewer"
-    className="border rounded"
-/>
+                        //                         <iframe
+                        //     src={`https://docs.google.com/viewer?url=${encodeURIComponent(proposal.documentUrl)}&embedded=true`}
+                        //     width="100%"
+                        //     style={{ height: '520px' }}
+                        //     title="PDF Viewer"
+                        //     className="border rounded"
+                        // />
+                        <iframe
+                            src={proposal.document_url}
+                            width="100%"
+                            style={{ height: '520px' }}
+                            title="PDF Viewer"
+                            className="border rounded"
+                        />
                     ) : (
                         <div
                             className="border-2 border-dashed rounded flex items-center justify-center text-gray-400 text-sm"
