@@ -5,10 +5,12 @@ import { addclientAPI, addprojectAPI, createProposalAPI, getclientAPI, getProjec
 import Select from 'react-select'
 import toast, { Toaster } from 'react-hot-toast'
 import { FiUser, FiMail, FiFolder, FiUploadCloud, FiCheck } from "react-icons/fi"
+import ManageStatusModal from "../../components/Managestatusmodal";
 
 function CreateProposal() {
     const navigate = useNavigate()
 
+    const [showManageStatus, setShowManageStatus] = useState(false)
     // show/hide new client/project
     const [showNewClient, setShowNewClient] = useState(false)
     const [showNewProject, setShowNewProject] = useState(false)
@@ -62,7 +64,7 @@ function CreateProposal() {
         const response = await genereteProposalStatusAPI(reqHeader)
         if (response.status === 200) {
             setStatuses(response.data)
-           
+
             const draftStatus = response.data.find(s => s.status_name === 'Draft')
             if (draftStatus) {
                 setProposalData(prev => ({ ...prev, statusId: draftStatus.id }))
@@ -265,7 +267,16 @@ function CreateProposal() {
                             </div>
 
                             <div>
-                                <label className="text-sm text-[#818293] mb-1 block">Status</label>
+                                <div className="flex justify-between items-center mb-1">
+                                    <label className="text-sm text-[#818293] block">Status</label>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowManageStatus(true)}
+                                        className="text-xs text-[#576aff] hover:underline"
+                                    >
+                                        + Manage Statuses
+                                    </button>
+                                </div>
                                 <select
                                     className="w-full  border-2 border-[#cfd3de] rounded-lg px-4 py-4 text-sm outline-none focus:border-[#576aff]"
                                     value={proposalData.statusId}
@@ -323,6 +334,13 @@ function CreateProposal() {
 
                 </div>
             </div>
+
+            {showManageStatus && (
+                <ManageStatusModal
+                    onClose={() => setShowManageStatus(false)}
+                    onStatusesChanged={getStatuses}
+                />
+            )}
         </div>
     );
 }

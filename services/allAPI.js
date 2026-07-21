@@ -71,6 +71,21 @@ export const genereteProposalStatusAPI=async(reqHeader)=>{
   return await commonAPI('GET',`${serverURL}/api/proposalstatus`,{},reqHeader)
 }
 
+//CREATE PROPOSAL STATUS
+export const createProposalStatusAPI = async (reqBody, reqHeader) => {
+  return await commonAPI('POST', `${serverURL}/api/proposalstatus`, reqBody, reqHeader)
+}
+
+//EDIT PROPOSAL STATUS NAME
+export const editProposalStatusAPI = async (id, reqBody, reqHeader) => {
+  return await commonAPI('PUT', `${serverURL}/api/proposalstatus/${id}`, reqBody, reqHeader)
+}
+
+//DELETE PROPOSAL STATUS
+export const removeProposalStatusAPI = async (id, reqHeader) => {
+  return await commonAPI('DELETE', `${serverURL}/api/proposalstatus/${id}`, {}, reqHeader)
+}
+
 // GENERATE LINK
 export const generateLinkAPI = async (reqBody, reqHeader) => {
   return await commonAPI('POST', `${serverURL}/api/links/generate`, reqBody, reqHeader)

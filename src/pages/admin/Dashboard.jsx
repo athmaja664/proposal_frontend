@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { Link, useNavigate } from "react-router-dom";
-import { listProposalAPI } from "../../../services/allAPI";
+import { listProposalAPI, genereteProposalStatusAPI } from "../../../services/allAPI";
 import { IoFileTrayFull } from "react-icons/io5";
 import { FcAcceptDatabase } from "react-icons/fc";
 import { HiPresentationChartLine } from "react-icons/hi";
@@ -15,6 +15,7 @@ function Dashboard() {
     const [dateInput, setDateInput] = useState("");
     const [logs, setLogs] = useState([])
     const [proposalData, setProposalData] = useState([]);
+    const [statuses, setStatuses] = useState([])
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [statusFilter, setStatusFilter] = useState("All Status")
@@ -31,8 +32,20 @@ function Dashboard() {
         }
         setLoading(false)
     }
+
+    // fetch statuses for the filter dropdown
+    const getStatuses = async () => {
+        const token = localStorage.getItem('token')
+        const reqHeader = { Authorization: `Bearer ${token}` }
+        const response = await genereteProposalStatusAPI(reqHeader)
+        if (response.status === 200) {
+            setStatuses(response.data)
+        }
+    }
+
     useEffect(() => {
         getProposals()
+        getStatuses()
     }, [])
 
     const filterProposal = proposalData.filter((item) => {
@@ -176,10 +189,9 @@ function Dashboard() {
                                         <select className="w-full px-4 py-2 rounded-[8px] border-2 border-[#d9dce8] text-sm"
                                             onChange={(e) => setStatusInput(e.target.value)}>
                                             <option>All Status</option>
-                                            <option>Draft</option>
-                                            <option>Sent</option>
-                                            <option>Accepted</option>
-                                            <option>Rejected</option>
+                                            {statuses.map((status) => (
+                                                <option key={status.id}>{status.status_name}</option>
+                                            ))}
                                         </select>
                                     </div>
 

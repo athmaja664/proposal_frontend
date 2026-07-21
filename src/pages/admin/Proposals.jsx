@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import Sidebar from "../../components/Sidebar";
-import { deleteProposalAPI, listProposalAPI } from "../../../services/allAPI";
+import { deleteProposalAPI, listProposalAPI, genereteProposalStatusAPI } from "../../../services/allAPI";
 import EditProposalModal from "../../components/EditProposalModal";
 //import ViewProposalModal from "../../components/ViewProposalModal";
 import GenerateLinkModal from "../../components/GenerateLinkModal";
@@ -35,6 +35,15 @@ function Proposals() {
     //pagination
     const [currentPage, setCurrentPage] = useState(1)
     const cardsPerPage = 8
+    const [statuses, setStatuses] = useState([])
+
+    const getStatuses = async () => {
+        const reqHeader = { Authorization: `Bearer ${token}` }
+        const response = await genereteProposalStatusAPI(reqHeader)
+        if (response.status === 200) {
+            setStatuses(response.data)
+        }
+    }
 
     const getProposals = async () => {
         const reqHeader = { Authorization: `Bearer ${token}` }
@@ -63,6 +72,7 @@ function Proposals() {
 
     useEffect(() => {
         getProposals()
+        getStatuses()
     }, [])
     const filterProposal = proposals.filter((item) =>
         (
@@ -150,10 +160,9 @@ function Proposals() {
                                 onChange={(e) => setStatusFilter(e.target.value)}
                             >
                                 <option>All Status</option>
-                                <option>Draft</option>
-                                <option>Sent</option>
-                                <option>Accepted</option>
-                                <option>Rejected</option>
+                                {statuses.map((status) => (
+                                    <option key={status.id}>{status.status_name}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
