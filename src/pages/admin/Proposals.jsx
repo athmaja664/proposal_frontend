@@ -72,7 +72,7 @@ function Proposals() {
         &&
         (
             statusFilter === "All Status" ||
-            item.status === statusFilter
+            item.status_name === statusFilter
         )
     )
 
@@ -185,8 +185,8 @@ function Proposals() {
                                         <div className="flex flex-col gap-1">
                                             <dt className="text-sm font-medium text-[#555665]">Status</dt>
                                             <dd>
-                                                <span className={`${getStatusStyle(item.status)} inline-flex justify-center items-center px-[10px] py-[10px] text-sm font-medium rounded-[5px]`}>
-                                                    {item.status}
+                                                <span className={`${getStatusStyle(item.status_name)} inline-flex justify-center items-center px-[10px] py-[10px] text-sm font-medium rounded-[5px]`}>
+                                                    {item.status_name}
                                                 </span>
                                             </dd>
                                         </div>

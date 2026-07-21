@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useNavigate } from "react-router-dom";
-import { addclientAPI, addprojectAPI, createProposalAPI, getclientAPI, getProjectAPI } from "../../../services/allAPI";
+import { addclientAPI, addprojectAPI, createProposalAPI, getclientAPI, getProjectAPI, genereteProposalStatusAPI } from "../../../services/allAPI";
 import Select from 'react-select'
 import toast, { Toaster } from 'react-hot-toast'
 import { FiUser, FiMail, FiFolder, FiUploadCloud, FiCheck } from "react-icons/fi"
@@ -16,6 +16,7 @@ function CreateProposal() {
     // dropdown data
     const [clients, setClients] = useState([])
     const [projects, setProjects] = useState([])
+    const [statuses, setStatuses] = useState([])
     const [loading, setLoading] = useState(false)
 
     // form data
@@ -23,7 +24,7 @@ function CreateProposal() {
         clientId: '',
         projectId: '',
         cost: '',
-        status: 'Draft',
+        statusId: '',
         description: '',
         document: ''
     })
@@ -56,9 +57,23 @@ function CreateProposal() {
             setProjects(response.data)
     }
 
+    // fetch statuses
+    const getStatuses = async () => {
+        const response = await genereteProposalStatusAPI(reqHeader)
+        if (response.status === 200) {
+            setStatuses(response.data)
+           
+            const draftStatus = response.data.find(s => s.status_name === 'Draft')
+            if (draftStatus) {
+                setProposalData(prev => ({ ...prev, statusId: draftStatus.id }))
+            }
+        }
+    }
+
     useEffect(() => {
         getClients()
         getProjects()
+        getStatuses()
     }, [])
 
     // handle client dropdown change
@@ -126,7 +141,7 @@ function CreateProposal() {
             }
         }
         setLoading(true)
-        if (!clientId || !projectId || !proposalData.description) {
+        if (!clientId || !projectId || !proposalData.description || !proposalData.cost) {
             toast.error('Please fill all required fields!')
             return
         }
@@ -135,7 +150,7 @@ function CreateProposal() {
         formData.append('clientId', clientId)
         formData.append('projectId', projectId)
         formData.append('cost', proposalData.cost)
-        formData.append('status', proposalData.status)
+        formData.append('statusId', proposalData.statusId)
         formData.append('description', proposalData.description)
         formData.append('document', proposalData.document)
 
@@ -151,7 +166,7 @@ function CreateProposal() {
             toast.success('Proposal Created Successfully!')
             navigate('/proposals')
         } else {
-            toast.error(response.data.message)
+            toast.error(response.data.message || response.data.error || 'Something went wrong')
             setLoading(false)
         }
     }
@@ -253,13 +268,12 @@ function CreateProposal() {
                                 <label className="text-sm text-[#818293] mb-1 block">Status</label>
                                 <select
                                     className="w-full  border-2 border-[#cfd3de] rounded-lg px-4 py-4 text-sm outline-none focus:border-[#576aff]"
-                                    onChange={(e) => setProposalData({ ...proposalData, status: e.target.value })}
+                                    value={proposalData.statusId}
+                                    onChange={(e) => setProposalData({ ...proposalData, statusId: e.target.value })}
                                 >
-                                    <option value="Draft">Draft</option>
-                                    <option value="Sent">Sent</option>
-                                    <option value="Accepted">Accepted</option>
-                                    <option value="Rejected">Rejected</option>
-                                    <option value="Archived">Archived</option>
+                                    {statuses.map(status => (
+                                        <option key={status.id} value={status.id}>{status.status_name}</option>
+                                    ))}
                                 </select>
                             </div>
                         </div>

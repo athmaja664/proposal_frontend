@@ -42,7 +42,7 @@ function Dashboard() {
 
         const matchStatus =
             statusFilter === "All Status" ||
-            item.status === statusFilter;
+            item.status_name === statusFilter;
 
         const matchDate =
             filterDate === "" ||
@@ -57,9 +57,9 @@ function Dashboard() {
     const currentProposal = filterProposal.slice(firstIndex, lastIndex);
     const totalPages = Math.ceil(filterProposal.length / cardsPerPage);
     const totalProposals = proposalData.length
-    const acceptedProposals = proposalData.filter((item) => item.status === 'Accepted').length
-    const sentingProposals = proposalData.filter((item) => item.status === 'Sent').length
-    const draftProposals = proposalData.filter((item) => item.status === 'Draft').length
+    const acceptedProposals = proposalData.filter((item) => item.status_name === 'Accepted').length
+    const sentingProposals = proposalData.filter((item) => item.status_name === 'Sent').length
+    const draftProposals = proposalData.filter((item) => item.status_name === 'Draft').length
 
 
     const getStatusStyle = (status) => {
@@ -242,8 +242,8 @@ function Dashboard() {
                                         <div className="flex flex-col gap-1">
                                             <dt className="text-sm font-medium text-[#555665]">Status</dt>
                                             <dd>
-                                                <span className={`${getStatusStyle(item.status)} inline-flex justify-center items-center px-[10px] py-[10px] text-sm font-medium rounded-[5px]`}>
-                                                    {item.status}
+                                                <span className={`${getStatusStyle(item.status_name)} inline-flex justify-center items-center px-[10px] py-[10px] text-sm font-medium rounded-[5px]`}>
+                                                    {item.status_name}
                                                 </span>
                                             </dd>
                                         </div>

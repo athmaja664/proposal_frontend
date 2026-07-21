@@ -1,28 +1,43 @@
-import React, { useState } from "react";
-import { updatedProposalAPI } from "../../services/allAPI";
+import React, { useState, useEffect } from "react";
+import { updatedProposalAPI, genereteProposalStatusAPI } from "../../services/allAPI";
 import toast, { Toaster } from 'react-hot-toast'
 function EditProposalModal({ onClose, proposal, getProposals }) {
+    const [statuses, setStatuses] = useState([])
     const [proposalData, setProposalData] = useState({
         cost: proposal?.cost || '',
-        status: proposal?.status || 'Draft',
+        statusId: proposal?.status_id || '',
         description: proposal?.description || '',
         document: ''
     })
 
+    const token = localStorage.getItem('token')
+    const reqHeader = { Authorization: `Bearer ${token}` }
+
+    // fetch statuses for the dropdown
+    const getStatuses = async () => {
+        const response = await genereteProposalStatusAPI(reqHeader)
+        if (response.status === 200) {
+            setStatuses(response.data)
+        }
+    }
+
+    useEffect(() => {
+        getStatuses()
+    }, [])
+
     const handleUpdate = async () => {
-        const token = localStorage.getItem('token')
-        const reqHeader = {
+        const fileHeader = {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data"
         }
         const formData = new FormData()
         formData.append('cost', proposalData.cost)
-        formData.append('status', proposalData.status)
+        formData.append('statusId', proposalData.statusId)
         formData.append('description', proposalData.description)
         if (proposalData.document) {
             formData.append('document', proposalData.document)
         }
-        const response = await updatedProposalAPI(proposal.id, formData, reqHeader)
+        const response = await updatedProposalAPI(proposal.id, formData, fileHeader)
         if (response.status === 200) {
             toast.success('Proposal Updated')
             getProposals()
@@ -30,7 +45,7 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
                 onClose()
             }, 1000)
         } else {
-            toast.error(response.data.message)
+            toast.error(response.data.message || response.data.error || 'Something went wrong')
         }
     }
 
@@ -80,15 +95,13 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
                         <div>
                             <label className="text-sm text-gray-500 mb-1 block">Status</label>
                             <select
-                                value={proposalData.status}
+                                value={proposalData.statusId}
                                 className="border p-2 rounded w-full"
-                                onChange={(e) => setProposalData({ ...proposalData, status: e.target.value })}
+                                onChange={(e) => setProposalData({ ...proposalData, statusId: e.target.value })}
                             >
-                                <option value="Draft">Draft</option>
-                                <option value="Sent">Sent</option>
-                                <option value="Accepted">Accepted</option>
-                                <option value="Rejected">Rejected</option>
-                                <option value="Archived">Archived</option>
+                                {statuses.map(status => (
+                                    <option key={status.id} value={status.id}>{status.status_name}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
@@ -132,20 +145,6 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
                 <div className="w-[45%] flex flex-col">
                     <h3 className="text-sm font-medium text-gray-500 mb-2">Current Document</h3>
                     {proposal?.document_url ? (
-                        // <iframe
-                        //     src={proposal.documentUrl}
-                        //     width="100%"
-                        //     className="border rounded flex-1"
-                        //     style={{ height: '520px' }}
-                        //     title="PDF Preview"
-                        // />
-                        //                         <iframe
-                        //     src={`https://docs.google.com/viewer?url=${encodeURIComponent(proposal.documentUrl)}&embedded=true`}
-                        //     width="100%"
-                        //     style={{ height: '520px' }}
-                        //     title="PDF Viewer"
-                        //     className="border rounded"
-                        // />
                         <iframe
                             src={proposal.document_url}
                             width="100%"

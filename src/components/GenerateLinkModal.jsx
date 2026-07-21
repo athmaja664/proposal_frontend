@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { generateLinkAPI, getLinkByProposalAPI, getSignatureByProposalAPI, revokeLinkAPI, unrevokeLinkAPI, updateProposalStatusAPI } from "../../services/allAPI";
+import { generateLinkAPI, getLinkByProposalAPI, getSignatureByProposalAPI, revokeLinkAPI, unrevokeLinkAPI, updateProposalStatusAPI, genereteProposalStatusAPI } from "../../services/allAPI";
 import { useNavigate } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast'
 function GenerateLinkModal({ onClose, proposalId, proposal }) {
@@ -10,10 +10,20 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
     const [generatedToken, setGeneratedToken] = useState('')
     const [isRevoked, setIsRevoked] = useState(false)
     const [isSent, setIsSent] = useState(false)
+    const [sentStatusId, setSentStatusId] = useState(null)
 
     const token = localStorage.getItem('token')
     const reqHeader = { Authorization: `Bearer ${token}` }
     useEffect(() => {
+        const getSentStatusId = async () => {
+            const response = await genereteProposalStatusAPI(reqHeader)
+            if (response.status === 200) {
+                const sentStatus = response.data.find(s => s.status_name === 'Sent')
+                if (sentStatus) setSentStatusId(sentStatus.id)
+            }
+        }
+        getSentStatusId()
+
         const getExistingLink = async () => {
             const response = await getLinkByProposalAPI(proposalId, reqHeader)
             if (response.status === 200) {
@@ -92,10 +102,16 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
     }
 
     const handleMarkAsSent = async () => {
-        const response = await updateProposalStatusAPI(proposalId, { status: 'Sent' }, reqHeader)
+        if (!sentStatusId) {
+            toast.error('Status list not loaded yet, try again')
+            return
+        }
+        const response = await updateProposalStatusAPI(proposalId, { statusId: sentStatusId }, reqHeader)
         if (response.status === 200) {
             toast.success('Status Updated successfully')
             setIsSent(true)
+        } else {
+            toast.error(response.data.message || response.data.error || 'Failed to update status')
         }
     }
     const handleCopyLink = () => {
@@ -199,18 +215,18 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                                         </button>
                                     </div>
 
-                                    {!isSent && proposal?.status !== 'Sent' &&
-                                        proposal?.status !== 'Accepted' &&
-                                        proposal?.status !== 'Rejected' && (
+                                    {!isSent && proposal?.status_name !== 'Sent' &&
+                                        proposal?.status_name !== 'Accepted' &&
+                                        proposal?.status_name !== 'Rejected' && (
                                             <button
                                                 onClick={handleMarkAsSent}
-                                                className="w-full bg-yellow-500 text-white py-2.5 rounded font-medium cursor-pointer"
+                                                className="w-full bg-green-600 text-white py-2.5 rounded font-medium cursor-pointer"
                                             >
                                                 Mark as Sent
                                             </button>
                                         )}
 
-                                    {(isSent || proposal?.status === 'Sent') && (
+                                    {(isSent || proposal?.status_name === 'Sent') && (
                                         <p className="text-center text-sm text-yellow-600 font-medium">
                                             ✓ Marked as Sent
                                         </p>
@@ -232,16 +248,16 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                                         </button>
                                     )}
 
-                                    {(proposal?.status === 'Accepted' || proposal?.status === 'Rejected') && (
+                                    {(proposal?.status_name === 'Accepted' || proposal?.status_name === 'Rejected') && (
                                         <button
                                             onClick={handleViewDecision}
                                             className={`w-full whitespace-nowrap p-3 rounded-[8px] font-medium cursor-pointer border transition-all
-${proposal?.status === 'Rejected'
+${proposal?.status_name === 'Rejected'
                                                     ? 'border-red-500 text-red-600 hover:bg-red-50'
                                                     : 'border-[#576aff] text-[#576aff] hover:bg-[#576aff] hover:text-white'
                                                 }`}
                                         >
-                                            View {proposal?.status} Decision & Download PDF
+                                            View {proposal?.status_name} Decision & Download PDF
                                         </button>
                                     )}
                                 </div>

@@ -319,7 +319,7 @@ function AuditLogs() {
                             <button
                                 type="button"
                                 onClick={confirmClearEmpty}
-                                className="flex-1 px-5 py-2.5 rounded-[8px] text-sm font-medium text-white bg-red-500 hover:bg-red-600 transition-colors cursor-pointer"
+                                className="flex-1 px-5 py-2.5 rounded-[8px] text-sm font-medium text-white bg-blue-500 hover:bg-red-600 transition-colors cursor-pointer"
                             >
                                 Yes, clear
                             </button>

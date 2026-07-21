@@ -61,7 +61,7 @@ function ViewProposalPage() {
                                 <b>Cost :</b> ₹{proposal?.cost}
                             </p>
                             <p>
-                                <b>Status :</b> {proposal?.status}
+                                <b>Status :</b> {proposal?.status_name}
                             </p>
                             <p>
                                 <b>Description :</b> {proposal?.description}
