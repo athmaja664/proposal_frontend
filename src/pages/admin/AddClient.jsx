@@ -90,17 +90,17 @@ function AddClient() {
         >
             <Sidebar />
 
-            <div className="flex-1 px-10 py-8 max-w-[1591px] w-full mx-auto">
+            <div className="flex-1 px-4 sm:px-6 lg:px-10 py-8 max-w-[1591px] w-full mx-auto">
 
                 {/* Header */}
                 <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-[28px] font-semibold text-[#3f4050] tracking-wide">
+                    <h1 className="text-2xl sm:text-[28px] font-semibold text-[#3f4050] tracking-wide">
                         Clients
                     </h1>
                 </div>
 
                 {/* Search Section */}
-                <div className="flex flex-wrap items-end gap-6 p-8 bg-white rounded-2xl shadow-[0_4px_8px_rgba(214,214,214,0.4)] mb-8">
+                <div className="flex flex-wrap items-end gap-6 p-5 sm:p-6 lg:p-8 bg-white rounded-2xl shadow-[0_4px_8px_rgba(214,214,214,0.4)] mb-8">
 
                   <div className="relative w-full">
     <input
@@ -151,10 +151,10 @@ function AddClient() {
 
                 {/* Cards */}
 
-                <div className="grid grid-cols-4 gap-7 max-[1280px]:grid-cols-3 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6 lg:gap-7">
 
                     {currentProposal.map((item) => (
-                        <div key={item.id} className="group relative p-7 bg-white rounded-2xl border border-[#f0f0f3] shadow-[0_2px_6px_rgba(214,214,214,0.3)] hover:shadow-[0_8px_20px_rgba(87,106,255,0.12)] hover:-translate-y-0.5 transition-all duration-200">
+                        <div key={item.id} className="group relative p-5 sm:p-6 lg:p-7 bg-white rounded-2xl border border-[#f0f0f3] shadow-[0_2px_6px_rgba(214,214,214,0.3)] hover:shadow-[0_8px_20px_rgba(87,106,255,0.12)] hover:-translate-y-0.5 transition-all duration-200">
 
                             <div className="flex items-center gap-3 mb-5">
                                 <div className={`w-12 h-12 shrink-0 rounded-full bg-gradient-to-br ${getAvatarColor(item.id)} text-white flex items-center justify-center font-semibold text-sm shadow-sm`}>
@@ -208,9 +208,9 @@ function AddClient() {
                 </div>
 
                 {/* Pagination */}
-                <div className="flex items-center justify-between mt-10">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-10">
 
-                    <div className="px-4 py-2 bg-white border border-[#e7e7eb] rounded-lg text-sm text-[#555665] shadow-sm">
+                    <div className="px-4 py-2 bg-white border border-[#e7e7eb] rounded-lg text-sm text-[#555665] shadow-sm text-center sm:text-left">
                         Showing{" "}
                         <span className="font-semibold">{filteredClients.length ? firstIndex + 1 : 0}</span>{" "}
                         to{" "}
@@ -222,7 +222,7 @@ function AddClient() {
                         Entries
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center justify-center gap-2">
 
                          <button
                                     onClick={() => setCurrentPage(currentPage - 1)}
@@ -274,8 +274,8 @@ function AddClient() {
 
             {/* Delete Confirmation Popup */}
             {confirmDeleteId && (
-                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[999]">
-                    <div className="bg-white rounded-[16px] shadow-lg w-[360px] p-6">
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[999] px-4">
+                    <div className="bg-white rounded-[16px] shadow-lg w-full max-w-[360px] p-6">
                         <h3 className="text-lg font-semibold text-[#1e1e21] mb-2">
                             Delete client?
                         </h3>

@@ -168,23 +168,23 @@ const actionOptions = [
     if (loading) return <Spinner />
     return (
         <div
-            className="flex flex-col min-h-screen bg-[#f9fafc]"
+            className="flex flex-col min-h-screen bg-[#f9fafc] overflow-x-hidden"
             style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}
         >
             <Toaster position="top-center" />
             <Sidebar />
 
-            <div className="flex-1 px-10 py-8 max-w-[1591px] w-full mx-auto">
+            <div className="flex-1 px-4 sm:px-6 md:px-10 py-5 sm:py-6 md:py-8 max-w-[1591px] w-full mx-auto">
 
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-[28px] font-semibold text-[#3f4050] tracking-wide">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-6 sm:mb-8">
+                    <h1 className="text-xl sm:text-2xl md:text-[28px] font-semibold text-[#3f4050] tracking-wide">
                         Audit Logs
                     </h1>
                 </div>
 
                 {/* Filters */}
-                <div className="flex flex-wrap items-end gap-6 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] mb-8">
-                    <div className="flex flex-col gap-2 flex-1 min-w-[220px]">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-end gap-4 sm:gap-6 p-4 sm:p-6 md:p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] mb-6 sm:mb-8">
+                    <div className="flex flex-col gap-2 w-full sm:flex-1 sm:min-w-[220px]">
                         <label className="text-sm font-medium text-[#555665]">Search</label>
                         <div className="relative" ref={searchBoxRef}>
                             <input
@@ -212,7 +212,7 @@ const actionOptions = [
                                 </button>
                             )}
                             {showSuggestions && searchSuggestions.length > 0 && (
-                                <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-[#e7e7eb] z-20 overflow-hidden">
+                                <div className="absolute top-full left-0 mt-1 w-full max-w-full bg-white rounded-lg shadow-lg border border-[#e7e7eb] z-20 overflow-hidden">
                                     {searchSuggestions.map((name, index) => (
                                         <div
                                             key={index}
@@ -220,7 +220,7 @@ const actionOptions = [
                                                 setSearchKey(name)
                                                 setShowSuggestions(false)
                                             }}
-                                            className="px-4 py-2 text-sm text-[#3f4050] cursor-pointer hover:bg-[#f5f7ff]"
+                                            className="px-4 py-2 text-sm text-[#3f4050] cursor-pointer hover:bg-[#f5f7ff] truncate"
                                         >
                                             {name}
                                         </div>
@@ -231,7 +231,7 @@ const actionOptions = [
                     </div>
 
 
-<div className="flex flex-col gap-2 min-w-[180px]">
+<div className="flex flex-col gap-2 w-full sm:w-auto sm:min-w-[180px]">
     <label className="text-sm font-medium text-[#555665]">Performed By</label>
     <div className="relative" ref={performedByDropdownRef}>
         <button
@@ -243,7 +243,7 @@ const actionOptions = [
             <span className="text-[#818293]">▾</span>
         </button>
         {showPerformedByDropdown && (
-            <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-[#e7e7eb] z-20 overflow-hidden">
+            <div className="absolute top-full left-0 mt-1 w-full max-w-full bg-white rounded-lg shadow-lg border border-[#e7e7eb] z-20 overflow-hidden">
                 {performedByOptions.map((opt) => (
                     <div
                         key={opt.value}
@@ -261,7 +261,7 @@ const actionOptions = [
     </div>
 </div>
 
-<div className="flex flex-col gap-2 min-w-[220px]">
+<div className="flex flex-col gap-2 w-full sm:w-auto sm:min-w-[220px]">
     <label className="text-sm font-medium text-[#555665]">Action</label>
     <div className="relative" ref={actionDropdownRef}>
         <button
@@ -273,7 +273,7 @@ const actionOptions = [
             <span className="text-[#818293]">▾</span>
         </button>
         {showActionDropdown && (
-            <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-[#e7e7eb] z-20 overflow-hidden max-h-60 overflow-y-auto">
+            <div className="absolute top-full left-0 mt-1 w-full max-w-full bg-white rounded-lg shadow-lg border border-[#e7e7eb] z-20 overflow-hidden max-h-60 overflow-y-auto">
                 {actionOptions.map((opt) => (
                     <div
                         key={opt.value}
@@ -291,11 +291,11 @@ const actionOptions = [
     </div>
 </div>
 
-                    <div className="flex flex-col gap-2 min-w-[180px]">
+                    <div className="flex flex-col gap-2 w-full sm:w-auto sm:min-w-[180px]">
                         <label className="text-sm font-medium text-[#555665]">Date</label>
                         <input
                             type="date"
-                            className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
+                            className="w-full px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
                             onChange={(e) => setFilterDate(e.target.value)}
                         />
                     </div>
@@ -303,67 +303,69 @@ const actionOptions = [
                     {/* Clear Empty Logs Button */}
                     <button
                         onClick={handleClearEmpty}
-                        className="px-5 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm font-medium text-[#555665] hover:bg-[#f9fafc] cursor-pointer"
+                        className="w-full sm:w-auto px-5 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm font-medium text-[#555665] hover:bg-[#f9fafc] cursor-pointer whitespace-nowrap"
                     >
                         Clear Empty Logs
                     </button>
                 </div>
 
-                <h2 className="text-xl font-semibold text-black mb-5">
+                <h2 className="text-lg sm:text-xl font-semibold text-black mb-4 sm:mb-5">
                     Activity
                 </h2>
 
                 {/* Table */}
                 <div className="bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] overflow-hidden">
-                    <table className="w-full text-sm">
-                        <thead className="bg-[#f9fafc] border-b border-[#e7e7eb] text-[#555665]">
-                            <tr>
-                                <th className="text-left px-6 py-4 font-semibold">Action</th>
-                                <th className="text-left px-6 py-4 font-semibold">Client</th>
-                                <th className="text-left px-6 py-4 font-semibold">Project</th>
-                                <th className="text-left px-6 py-4 font-semibold">Performed By</th>
-                                <th className="text-left px-6 py-4 font-semibold">Timestamp</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentLogs.length ? currentLogs.map((log) => (
-                                <tr key={log.id} className="border-b border-[#e7e7eb] hover:bg-[#f9fafc]">
-                                    <td className="px-6 py-4">
-                                        <span className={`${getActionStyle(log.action)} text-xs font-medium px-3 py-1 rounded-full`}>
-                                            {log.action.replace(/_/g, ' ')}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-[#818293]">
-                                        {log.client_name}
-                                    </td>
-                                    <td className="px-6 py-4 text-[#818293]">
-                                        {log.project_name}
-                                    </td>
-                                    <td className="px-6 py-4 text-[#818293]">
-                                        {log.performed_by}
-                                    </td>
-                                    <td className="px-6 py-4 text-[#818293]">
-                                        {new Date(log.created_at).toLocaleString()}
-                                    </td>
-                                </tr>
-                            )) : (
+                    <div className="overflow-x-auto">
+                        <table className="w-full min-w-[700px] text-sm">
+                            <thead className="bg-[#f9fafc] border-b border-[#e7e7eb] text-[#555665]">
                                 <tr>
-                                    <td colSpan="5" className="text-center py-10 text-[#9698a6]">
-                                        No logs found
-                                    </td>
+                                    <th className="text-left px-6 py-4 font-semibold whitespace-nowrap">Action</th>
+                                    <th className="text-left px-6 py-4 font-semibold whitespace-nowrap">Client</th>
+                                    <th className="text-left px-6 py-4 font-semibold whitespace-nowrap">Project</th>
+                                    <th className="text-left px-6 py-4 font-semibold whitespace-nowrap">Performed By</th>
+                                    <th className="text-left px-6 py-4 font-semibold whitespace-nowrap">Timestamp</th>
                                 </tr>
-                            )}
+                            </thead>
+                            <tbody>
+                                {currentLogs.length ? currentLogs.map((log) => (
+                                    <tr key={log.id} className="border-b border-[#e7e7eb] hover:bg-[#f9fafc]">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className={`${getActionStyle(log.action)} text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap`}>
+                                                {log.action.replace(/_/g, ' ')}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-[#818293] whitespace-nowrap">
+                                            {log.client_name}
+                                        </td>
+                                        <td className="px-6 py-4 text-[#818293] whitespace-nowrap">
+                                            {log.project_name}
+                                        </td>
+                                        <td className="px-6 py-4 text-[#818293] whitespace-nowrap">
+                                            {log.performed_by}
+                                        </td>
+                                        <td className="px-6 py-4 text-[#818293] whitespace-nowrap">
+                                            {new Date(log.created_at).toLocaleString()}
+                                        </td>
+                                    </tr>
+                                )) : (
+                                    <tr>
+                                        <td colSpan="5" className="text-center py-10 text-[#9698a6]">
+                                            No logs found
+                                        </td>
+                                    </tr>
+                                )}
 
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 {/* pagination */}
                 {filteredLogs.length > 0 && (
-                    <div className="flex items-center justify-between mt-10">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-center justify-between gap-4 sm:gap-0 mt-8 sm:mt-10">
 
                         {/* Left Side */}
-                        <div className="px-4 py-2 bg-white border border-[#e7e7eb] rounded-lg text-sm text-[#555665] shadow-sm">
+                        <div className="px-4 py-2 bg-white border border-[#e7e7eb] rounded-lg text-xs sm:text-sm text-[#555665] shadow-sm text-center sm:text-left">
                             Showing{" "}
                             <span className="font-semibold">{firstIndex + 1}</span>{" "}
                             to{" "}
@@ -376,12 +378,12 @@ const actionOptions = [
                         </div>
 
                         {/* Right Side */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center justify-center gap-2 max-w-full">
 
                             <button
                                 onClick={() => setCurrentPage(currentPage - 1)}
                                 disabled={currentPage === 1}
-                                className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff] cursor-pointer disabled:cursor-not-allowed"
+                                className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff] cursor-pointer disabled:cursor-not-allowed shrink-0"
                             >
                                 &#10094;
                             </button>
@@ -390,7 +392,7 @@ const actionOptions = [
                                 page === '...' ? (
                                     <span
                                         key={`dots-${index}`}
-                                        className="w-10 h-10 flex items-center justify-center text-sm text-[#818293] select-none"
+                                        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-sm text-[#818293] select-none shrink-0"
                                     >
                                         &#8230;
                                     </span>
@@ -398,7 +400,7 @@ const actionOptions = [
                                     <button
                                         key={page}
                                         onClick={() => setCurrentPage(page)}
-                                        className={`w-10 h-10 rounded-lg text-sm font-medium transition cursor-pointer
+                                        className={`w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-lg text-sm font-medium transition cursor-pointer
           ${currentPage === page
                                                 ? "bg-[#576aff] text-white"
                                                 : "bg-white border border-[#d9dce8] text-[#555665] hover:bg-[#f5f7ff] cursor-pointer"
@@ -412,7 +414,7 @@ const actionOptions = [
                             <button
                                 onClick={() => setCurrentPage(currentPage + 1)}
                                 disabled={currentPage === totalPages}
-                                className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff] cursor-pointer disabled:cursor-not-allowed"
+                                className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff] cursor-pointer disabled:cursor-not-allowed shrink-0"
                             >
                                 &#10095;
                             </button>
@@ -425,8 +427,8 @@ const actionOptions = [
 
             {showClearConfirm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-                    <div className="w-full max-w-sm bg-white rounded-[16px] shadow-xl p-8 flex flex-col items-center gap-5 text-center">
-                        <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
+                    <div className="w-full max-w-[90vw] sm:max-w-sm bg-white rounded-[16px] shadow-xl p-6 sm:p-8 flex flex-col items-center gap-5 text-center">
+                        <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center shrink-0">
                             <svg width="26" height="26" fill="none" viewBox="0 0 24 24">
                                 <path d="M6 7h12M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m2 0-1 12a2 2 0 01-2 2H9a2 2 0 01-2-2L6 7h12z"
                                     stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -436,18 +438,18 @@ const actionOptions = [
                             <h3 className="text-lg font-semibold text-[#3f4050] mb-1">Clear Empty Logs</h3>
                             <p className="text-sm text-[#818293]">Are you sure you want to delete all logs with missing proposal data? This action cannot be undone.</p>
                         </div>
-                        <div className="flex gap-3 w-full mt-2">
+                        <div className="flex flex-col sm:flex-row gap-3 w-full mt-2">
                             <button
                                 type="button"
                                 onClick={() => setShowClearConfirm(false)}
-                                className="flex-1 px-5 py-2.5 rounded-[8px] border-2 border-[#d9dce8] text-sm font-medium text-[#555665] hover:bg-[#f9fafc] cursor-pointer"
+                                className="w-full flex-1 px-5 py-2.5 rounded-[8px] border-2 border-[#d9dce8] text-sm font-medium text-[#555665] hover:bg-[#f9fafc] cursor-pointer"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="button"
                                 onClick={confirmClearEmpty}
-                                className="flex-1 px-5 py-2.5 rounded-[8px] text-sm font-medium text-white bg-blue-500 hover:bg-red-600 transition-colors cursor-pointer"
+                                className="w-full flex-1 px-5 py-2.5 rounded-[8px] text-sm font-medium text-white bg-blue-500 hover:bg-red-600 transition-colors cursor-pointer"
                             >
                                 Yes, clear
                             </button>

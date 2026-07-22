@@ -175,12 +175,12 @@ function CreateProposal() {
 
 
     return (
-        <div className="bg-white min-h-screen" style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}>
+        <div className="bg-white min-h-screen overflow-x-hidden" style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}>
             <Toaster position="top-center" />
             <Sidebar />
 
-            <div className="max-w-[1500px] mx-auto px-8 py-8">
-                <div className="bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-8">
+            <div className="max-w-[1500px] mx-auto px-4 sm:px-6 md:px-8 py-5 sm:py-6 md:py-8">
+                <div className="bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-4 sm:p-6 md:p-8">
 
                     <div className="mb-6">
                         <label className="text-[15px] text-[#1e1e21] mb-2 block">Select Client</label>
@@ -203,17 +203,17 @@ function CreateProposal() {
                     </div>
 
                     {showNewClient && (
-                        <div className="bg-[#f7f7fb] rounded-xl p-6 mb-6">
+                        <div className="bg-[#f7f7fb] rounded-xl p-4 sm:p-6 mb-6">
                             <p className="text-[16px] font-semibold text-[#1e1e21] mb-4">New Client Details</p>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="text-sm text-[#818293] mb-1 block">Client Name</label>
                                     <div className="flex items-center gap-2 bg-white border-2 border-[#cfd3de] rounded-lg px-4 py-3 focus-within:border-[#576aff]">
-                                        <FiUser className="text-[#9698a6]" size={18} />
+                                        <FiUser className="text-[#9698a6] shrink-0" size={18} />
                                         <input
                                             type="text"
                                             placeholder="Client Name"
-                                            className="w-full outline-none text-sm"
+                                            className="w-full min-w-0 outline-none text-sm"
                                             onChange={(e) => setNewClientData({ ...newClientData, name: e.target.value })}
                                         />
                                     </div>
@@ -221,11 +221,11 @@ function CreateProposal() {
                                 <div>
                                     <label className="text-sm text-[#818293] mb-1 block">Client Email</label>
                                     <div className="flex items-center gap-2 bg-white border-2 border-[#cfd3de] rounded-lg px-4 py-3 focus-within:border-[#576aff]">
-                                        <FiMail className="text-[#9698a6]" size={18} />
+                                        <FiMail className="text-[#9698a6] shrink-0" size={18} />
                                         <input
                                             type="email"
                                             placeholder="Client Email"
-                                            className="w-full outline-none text-sm"
+                                            className="w-full min-w-0 outline-none text-sm"
                                             onChange={(e) => setNewClientData({ ...newClientData, email: e.target.value })}
                                         />
                                     </div>
@@ -235,24 +235,24 @@ function CreateProposal() {
                     )}
 
                     {showNewProject && (
-                        <div className="bg-[#f7f7fb] rounded-xl p-6 mb-6">
+                        <div className="bg-[#f7f7fb] rounded-xl p-4 sm:p-6 mb-6">
                             <p className="text-[16px] font-semibold text-[#1e1e21] mb-4">New Project Details</p>
                             <div>
                                 <label className="text-sm text-[#818293] mb-1 block">Project Name</label>
                                 <div className="flex items-center gap-2 bg-white border-2 border-[#cfd3de] rounded-lg px-4 py-3 focus-within:border-[#576aff]">
-                                    <FiFolder className="text-[#9698a6]" size={18} />
+                                    <FiFolder className="text-[#9698a6] shrink-0" size={18} />
                                     <input
                                         type="text"
                                         placeholder="Project Name"
-                                        className="w-full outline-none text-sm"
+                                        className="w-full min-w-0 outline-none text-sm"
                                         onChange={(e) => setNewProjectData({ projectName: e.target.value })}
                                     />
                                 </div>
                             </div>
                         </div>
                     )}
-                    <div className="bg-[#f7f7fb] rounded-xl p-6 mb-8">
-                        <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="bg-[#f7f7fb] rounded-xl p-4 sm:p-6 mb-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                             <div>
                                 <label className="text-sm text-[#818293] mb-1 block">Cost</label>
                                 <div className="flex items-center gap-2 border-2 border-[#cfd3de] rounded-lg px-4 py-3 focus-within:border-[#576aff]">
@@ -260,25 +260,25 @@ function CreateProposal() {
                                     <input
                                         type="number"
                                         placeholder="5000"
-                                        className="w-full outline-none text-sm"
+                                        className="w-full min-w-0 outline-none text-sm"
                                         onChange={(e) => setProposalData({ ...proposalData, cost: e.target.value })}
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <div className="flex justify-between items-center mb-1">
+                                <div className="flex flex-wrap justify-between items-center gap-2 mb-1">
                                     <label className="text-sm text-[#818293] block">Status</label>
                                     <button
                                         type="button"
                                         onClick={() => setShowManageStatus(true)}
-                                        className="text-xs text-[#576aff] hover:underline"
+                                        className="text-xs text-[#576aff] hover:underline whitespace-nowrap"
                                     >
                                         + Manage Statuses
                                     </button>
                                 </div>
                                 <select
-                                    className="w-full  border-2 border-[#cfd3de] rounded-lg px-4 py-4 text-sm outline-none focus:border-[#576aff]"
+                                    className="w-full border-2 border-[#cfd3de] rounded-lg px-4 py-4 text-sm outline-none focus:border-[#576aff]"
                                     value={proposalData.statusId}
                                     onChange={(e) => setProposalData({ ...proposalData, statusId: e.target.value })}
                                 >
@@ -300,8 +300,8 @@ function CreateProposal() {
                             ></textarea>
                         </div>
                     </div>
-                    <div className="bg-[#f7f7fb] rounded-xl p-6 mb-8">
-                        <div className="border-2 border-dashed border-[#c7cbe8] rounded-xl py-12 mb-8 flex flex-col items-center justify-center text-center">
+                    <div className="bg-[#f7f7fb] rounded-xl p-4 sm:p-6 mb-8">
+                        <div className="border-2 border-dashed border-[#c7cbe8] rounded-xl py-8 sm:py-12 px-4 mb-8 flex flex-col items-center justify-center text-center">
                             <FiUploadCloud className="text-[#576aff] mb-3" size={36} />
                             <label className="cursor-pointer">
                                 <span className="text-[#576aff] underline text-sm font-medium">Choose File</span>
@@ -313,19 +313,19 @@ function CreateProposal() {
                                     onChange={(e) => setProposalData({ ...proposalData, document: e.target.files[0] })}
                                 />
                             </label>
-                            <p className="text-[#9698a6] text-sm mt-1">
+                            <p className="text-[#9698a6] text-sm mt-1 break-all">
                                 {proposalData.document ? proposalData.document.name : "No file chosen"}
                             </p>
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3 mb-10">
-                        <button onClick={() => navigate(-1)} className="px-6 py-3 border border-[#e4e4eb] rounded-lg text-sm text-[#555665] cursor-pointer hover:bg-gray-50">
+                    <div className="flex flex-col sm:flex-row justify-end gap-3 mb-10">
+                        <button onClick={() => navigate(-1)} className="w-full sm:w-auto px-6 py-3 border border-[#e4e4eb] rounded-lg text-sm text-[#555665] cursor-pointer hover:bg-gray-50">
                             Cancel
                         </button>
                         <button
                             onClick={handleCreate}
-                            className="flex items-center gap-2 px-6 py-3 bg-[#576aff] hover:bg-[#3d52f2] text-white rounded-lg text-sm font-medium cursor-pointer transition-colors"
+                            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-[#576aff] hover:bg-[#3d52f2] text-white rounded-lg text-sm font-medium cursor-pointer transition-colors"
                         >
                             <FiCheck size={16} />
                             {loading ? 'Creating...' : 'Create Proposal'}

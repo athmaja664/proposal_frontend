@@ -183,17 +183,17 @@ function Proposals() {
                 <Toaster position="top-center" />
                 <Sidebar />
 
-                <div className="flex-1 px-10 py-8 max-w-[1591px] w-full mx-auto">
+                <div className="flex-1 px-4 sm:px-6 lg:px-10 py-8 max-w-[1591px] w-full mx-auto">
 
                     <div className="flex justify-between items-center mb-8">
-                        <h1 className="text-[28px] font-semibold text-[#3f4050] tracking-wide">
+                        <h1 className="text-2xl sm:text-[28px] font-semibold text-[#3f4050] tracking-wide">
                             Proposals
                         </h1>
                     </div>
 
                     {/* filter panel */}
-                    <div className="flex flex-wrap items-end gap-6 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] mb-8">
-                        <div className="flex flex-col gap-2 flex-1 min-w-[220px]">
+                    <div className="flex flex-wrap items-end gap-4 sm:gap-6 p-5 sm:p-6 lg:p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] mb-8">
+                        <div className="flex flex-col gap-2 flex-1 min-w-[100%] sm:min-w-[220px]">
                             <label className="text-sm font-medium text-[#555665]">Search</label>
                             <div className="relative" ref={searchBoxRef}>
                                 <input
@@ -238,17 +238,17 @@ function Proposals() {
                                 )}
                             </div>
                         </div>
-                        <div className="flex flex-col gap-2 min-w-[180px]">
+                        <div className="flex flex-col gap-2 min-w-[calc(50%-8px)] sm:min-w-[180px] flex-1 sm:flex-none">
                             <label className="text-sm font-medium text-[#555665]">Proposal Add Date</label>
                             <input
                                 type="date"
                                 value={filterDate}
-                                className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff] cursor-pointer"
+                                className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff] cursor-pointer w-full"
                                 onChange={(e) => setFilterDate(e.target.value)}
                             />
                         </div>
                         
-<div className="flex flex-col gap-2 min-w-[200px]">
+<div className="flex flex-col gap-2 min-w-[calc(50%-8px)] sm:min-w-[200px] flex-1 sm:flex-none">
     <label className="text-sm font-medium text-[#555665]">Status</label>
     <div className="relative" ref={statusDropdownRef}>
         <button
@@ -286,10 +286,10 @@ function Proposals() {
         )}
     </div>
 </div>
-                        <div className="flex gap-3">
+                        <div className="flex gap-3 w-full sm:w-auto">
                             <button
                                 type="button"
-                                className="px-5 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm font-medium text-[#555665] hover:bg-[#f9fafc] cursor-pointer"
+                                className="w-full sm:w-auto px-5 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm font-medium text-[#555665] hover:bg-[#f9fafc] cursor-pointer"
                                 onClick={() => {
                                     setSearchKey("")
                                     setFilterDate("")
@@ -308,19 +308,19 @@ function Proposals() {
 
                     {/* proposal cards */}
                     {filterProposal.length ? (
-                        <div className="grid grid-cols-4 gap-[29px] max-[1280px]:grid-cols-3 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6 lg:gap-[29px]">
                             {currentProposal.map((item) => (
                                 <div
                                     key={item.id}
                                     ref={openActionId === item.id ? actionRef : null}
-                                    className="relative flex flex-col items-start gap-[14px] p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.25)]"
+                                    className="relative flex flex-col items-start gap-[14px] p-5 sm:p-6 lg:p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.25)]"
                                 >
-                                    <h3 className="text-lg font-semibold text-black pr-6">{item.project_name}</h3>
+                                    <h3 className="text-lg font-semibold text-black pr-6 break-words">{item.project_name}</h3>
 
                                     <dl className="flex flex-col gap-5 w-full">
                                         <div className="flex flex-col gap-1">
                                             <dt className="text-sm font-medium text-[#555665]">Client Name:</dt>
-                                            <dd className="text-sm text-[#818293]">{item.client_name}</dd>
+                                            <dd className="text-sm text-[#818293] break-words">{item.client_name}</dd>
                                         </div>
                                         <div className="flex flex-col gap-1">
                                             <dt className="text-sm font-medium text-[#555665]">Proposal Ad Date:</dt>
@@ -340,14 +340,14 @@ function Proposals() {
                                     <button
                                         type="button"
                                         onClick={() => setOpenActionId(openActionId === item.id ? null : item.id)}
-                                        className="absolute top-8 right-8 w-8 h-8 flex items-center justify-center rounded-full text-[#818293] hover:bg-[#f5f7ff] hover:text-[#576aff] transition-colors cursor-pointer"
+                                        className="absolute top-5 right-5 sm:top-8 sm:right-8 w-8 h-8 flex items-center justify-center rounded-full text-[#818293] hover:bg-[#f5f7ff] hover:text-[#576aff] transition-colors cursor-pointer"
                                         aria-label="Actions"
                                     >
                                         <HiDotsVertical size={18} />
                                     </button>
 
                                     {openActionId === item.id && (
-                                        <div className="absolute top-16 right-8 z-10 w-40 bg-white rounded-lg shadow-lg border border-[#e7e7eb] py-2">
+                                        <div className="absolute top-14 right-5 sm:top-16 sm:right-8 z-10 w-40 bg-white rounded-lg shadow-lg border border-[#e7e7eb] py-2">
                                             <span
                                                 onClick={() => {
                                                     navigate("/viewproposals", {
@@ -398,7 +398,7 @@ function Proposals() {
                             ))}
                         </div>
                     ) : (
-                        <div className="flex flex-col items-center gap-2 text-[#9698a6] bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.25)] py-14">
+                        <div className="flex flex-col items-center gap-2 text-[#9698a6] bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.25)] py-14 px-4 text-center">
                             <svg width="40" height="40" fill="none" viewBox="0 0 24 24">
                                 <path d="M9 12h6M9 16h6M9 8h3M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"
                                     stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" />
@@ -410,10 +410,10 @@ function Proposals() {
 
                     {/* pagination */}
                     {filterProposal.length > 0 && (
-                        <div className="flex items-center justify-between mt-10">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-10">
 
                             {/* Left Side */}
-                            <div className="px-4 py-2 bg-white border border-[#e7e7eb] rounded-lg text-sm text-[#555665] shadow-sm">
+                            <div className="px-4 py-2 bg-white border border-[#e7e7eb] rounded-lg text-sm text-[#555665] shadow-sm text-center sm:text-left">
                                 Showing{" "}
                                 <span className="font-semibold">{firstIndex + 1}</span>{" "}
                                 to{" "}
@@ -426,7 +426,7 @@ function Proposals() {
                             </div>
 
                             {/* Right Side */}
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-wrap items-center justify-center gap-2">
 
                                   
                                 <button
@@ -470,7 +470,7 @@ function Proposals() {
             {confirmDeleteId && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-[2px] px-4">
                     <div
-                        className="w-full max-w-sm rounded-[16px] p-8 flex flex-col items-center gap-5 text-center shadow-[0_4px_8px_rgba(214,214,214,0.4)]"
+                        className="w-full max-w-sm rounded-[16px] p-6 sm:p-8 flex flex-col items-center gap-5 text-center shadow-[0_4px_8px_rgba(214,214,214,0.4)]"
                         style={{
                             background:
                                 "url('/Images/background_img.svg') #ffffff center / cover no-repeat",
