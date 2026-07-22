@@ -37,7 +37,7 @@ function PasswordGate() {
         const response = await verifyPasswordAPI({ token, password });
         if (response.status === 200) {
             if (response.data.alreadyResponded) {
-                toast.success('Welcome back')
+                // toast.success('Welcome back')
                 setTimeout(() => {
                     navigate('/success', {
                         state: {
@@ -48,7 +48,7 @@ function PasswordGate() {
                     });
                 }, 1000)
             } else {
-                toast.success('Welcome')
+                // toast.success('Welcome')
                 setTimeout(() => {
                     navigate('/proposalview', { state: { proposal: response.data.proposal } });
                 }, 1000)

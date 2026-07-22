@@ -27,21 +27,35 @@ function ProposalViewer() {
     const [showConfirmModal, setShowConfirmModal] = useState(false)
     const [alertMessage, setAlertMessage] = useState('')
 
+    // works for both mouse events (e.clientX/Y) and touch events (e.touches[0])
+    const getCoords = (e, canvas) => {
+        const rect = canvas.getBoundingClientRect()
+        const scaleX = canvas.width / rect.width
+        const scaleY = canvas.height / rect.height
+        const point = e.touches && e.touches.length > 0 ? e.touches[0] : e
+        return {
+            x: (point.clientX - rect.left) * scaleX,
+            y: (point.clientY - rect.top) * scaleY
+        }
+    }
+
     const startDrawing = (e) => {
+        if (e.touches) e.preventDefault()
         const canvas = canvasRef.current
         const ctx = canvas.getContext('2d')
-        const rect = canvas.getBoundingClientRect()
+        const { x, y } = getCoords(e, canvas)
         ctx.beginPath()
-        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top)
+        ctx.moveTo(x, y)
         canvas.isDrawing = true
     }
 
     const draw = (e) => {
         const canvas = canvasRef.current
         if (!canvas.isDrawing) return
+        if (e.touches) e.preventDefault()
         const ctx = canvas.getContext('2d')
-        const rect = canvas.getBoundingClientRect()
-        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top)
+        const { x, y } = getCoords(e, canvas)
+        ctx.lineTo(x, y)
         ctx.strokeStyle = '#000'
         ctx.lineWidth = 2
         ctx.lineCap = 'round'
@@ -284,6 +298,10 @@ function ProposalViewer() {
                                                 onMouseMove={draw}
                                                 onMouseUp={stopDrawing}
                                                 onMouseLeave={stopDrawing}
+                                                onTouchStart={startDrawing}
+                                                onTouchMove={draw}
+                                                onTouchEnd={stopDrawing}
+                                                onTouchCancel={stopDrawing}
                                             />
                                         </div>
                                     )}

@@ -192,44 +192,44 @@ function Dashboard() {
                 <Toaster position="top-center" />
                 <Sidebar />
 
-                <div className="flex-1 px-10 py-8 max-w-[1591px] w-full mx-auto">
+                <div className="flex-1 px-4 sm:px-6 lg:px-10 py-8 max-w-[1591px] w-full mx-auto">
 
                     {/* metrics */}
-                    <div className="grid grid-cols-4 gap-[29px] mb-[60px] mt-6 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
-                        <div className="flex items-start gap-5 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)]">
-                            <img src="/icons/receipt-edit.svg" alt="total" className="w-12 h-12 hover:opacity-70" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[18px] sm:gap-[24px] lg:gap-[29px] mb-10 lg:mb-[60px] mt-6">
+                        <div className="flex items-start gap-4 sm:gap-5 p-5 sm:p-6 lg:p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)]">
+                            <img src="/icons/receipt-edit.svg" alt="total" className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 hover:opacity-70" />
                             <div>
-                                <p className="text-lg font-medium text-[#555665] mb-1">Total Proposals</p>
-                                <h2 className="text-[40px] font-semibold leading-[52px] text-[#3f4050]">{totalProposals}</h2>
-                                <p className="text-base text-[#555665]">All Proposals</p>
+                                <p className="text-base sm:text-lg font-medium text-[#555665] mb-1">Total Proposals</p>
+                                <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-semibold leading-tight lg:leading-[52px] text-[#3f4050]">{totalProposals}</h2>
+                                <p className="text-sm sm:text-base text-[#555665]">All Proposals</p>
                             </div>
                         </div>
 
-                        <div className="flex items-start gap-5 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)]">
-                            <img src="/icons/right.svg" alt="accept" className="w-12 h-12 hover:opacity-70" />
+                        <div className="flex items-start gap-4 sm:gap-5 p-5 sm:p-6 lg:p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)]">
+                            <img src="/icons/right.svg" alt="accept" className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 hover:opacity-70" />
 
                             <div>
-                                <p className="text-lg font-medium text-[#555665] mb-1">Accepted</p>
-                                <h2 className="text-[40px] font-semibold leading-[52px] text-[#3f4050]">{acceptedProposals}</h2>
-                                <p className="text-base text-[#555665]">Proposals Accepted</p>
+                                <p className="text-base sm:text-lg font-medium text-[#555665] mb-1">Accepted</p>
+                                <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-semibold leading-tight lg:leading-[52px] text-[#3f4050]">{acceptedProposals}</h2>
+                                <p className="text-sm sm:text-base text-[#555665]">Proposals Accepted</p>
                             </div>
                         </div>
 
-                        <div className="flex items-start gap-5 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)]">
-                            <img src="/icons/user.svg" alt="" className="w-12 h-12 hover:opacity-70" />
+                        <div className="flex items-start gap-4 sm:gap-5 p-5 sm:p-6 lg:p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)]">
+                            <img src="/icons/user.svg" alt="" className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 hover:opacity-70" />
                             <div>
-                                <p className="text-lg font-medium text-[#555665] mb-1">Sent</p>
-                                <h2 className="text-[40px] font-semibold leading-[52px] text-[#3f4050]">{sentingProposals}</h2>
-                                <p className="text-base text-[#555665]">Proposals Sent</p>
+                                <p className="text-base sm:text-lg font-medium text-[#555665] mb-1">Sent</p>
+                                <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-semibold leading-tight lg:leading-[52px] text-[#3f4050]">{sentingProposals}</h2>
+                                <p className="text-sm sm:text-base text-[#555665]">Proposals Sent</p>
                             </div>
                         </div>
 
-                        <div className="flex items-start gap-5 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)]">
-                            <img src="/icons/duration.svg" alt="darft" className="w-12 h-12 hover:opacity-70" />
+                        <div className="flex items-start gap-4 sm:gap-5 p-5 sm:p-6 lg:p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)]">
+                            <img src="/icons/duration.svg" alt="darft" className="w-10 h-10 sm:w-12 sm:h-12 shrink-0 hover:opacity-70" />
                             <div>
-                                <p className="text-lg font-medium text-[#555665] mb-1">Draft</p>
-                                <h2 className="text-[40px] font-semibold leading-[52px] text-[#3f4050]">{draftProposals}</h2>
-                                <p className="text-base text-[#555665]">Proposals Rejected</p>
+                                <p className="text-base sm:text-lg font-medium text-[#555665] mb-1">Draft</p>
+                                <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-semibold leading-tight lg:leading-[52px] text-[#3f4050]">{draftProposals}</h2>
+                                <p className="text-sm sm:text-base text-[#555665]">Proposals Rejected</p>
                             </div>
                         </div>
                     </div>
@@ -242,9 +242,9 @@ function Dashboard() {
                             Proposals
                         </h2>
 
-                        <div className="grid grid-cols-4 gap-[29px] max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[18px] sm:gap-[24px] lg:gap-[29px]">
                             {/* filter panel */}
-                            <div className="flex flex-col justify-between gap-6 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] h-full">
+                            <div className="flex flex-col justify-between gap-6 p-5 sm:p-6 lg:p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] h-full">
                                 
                                 <div className="flex flex-col gap-2">
                                     <label className="text-sm font-medium text-[#555665]">Project / Client Name</label>
@@ -292,9 +292,9 @@ function Dashboard() {
                                 </div>
 
 
-                                <div className="flex gap-6">
+                                <div className="flex flex-col sm:flex-row gap-6">
 
-                                    <div className="flex flex-col gap-2 w-1/2">
+                                    <div className="flex flex-col gap-2 w-full sm:w-1/2">
                                         <label className="text-sm font-medium text-[#555665]">
                                             Proposal Add Date
                                         </label>
@@ -307,7 +307,7 @@ function Dashboard() {
                                         />
                                     </div>
 
-                                    <div className="flex flex-col gap-2 w-1/2">
+                                    <div className="flex flex-col gap-2 w-full sm:w-1/2">
                                         <label className="text-sm font-medium text-[#555665]">
                                             Status
                                         </label>
@@ -396,14 +396,14 @@ function Dashboard() {
                                 <div
                                     key={item.id}
                                     ref={openActionId === item.id ? actionRef : null}
-                                    className="relative flex flex-col items-start gap-[14px] p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.25)]"
+                                    className="relative flex flex-col items-start gap-[14px] p-5 sm:p-6 lg:p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.25)]"
                                 >
-                                    <h3 className="text-lg font-semibold text-black pr-6">{item.project_name}</h3>
+                                    <h3 className="text-lg font-semibold text-black pr-6 break-words">{item.project_name}</h3>
 
                                     <dl className="flex flex-col gap-5 w-full">
                                         <div className="flex flex-col gap-1">
                                             <dt className="text-sm font-medium text-[#555665]">Client Name:</dt>
-                                            <dd className="text-sm text-[#818293]">{item.client_name}</dd>
+                                            <dd className="text-sm text-[#818293] break-words">{item.client_name}</dd>
                                         </div>
                                         <div className="flex flex-col gap-1">
                                             <dt className="text-sm font-medium text-[#555665]">Proposal Ad Date:</dt>
@@ -423,14 +423,14 @@ function Dashboard() {
                                     <button
                                         type="button"
                                         onClick={() => setOpenActionId(openActionId === item.id ? null : item.id)}
-                                        className="absolute top-8 right-8 w-8 h-8 flex items-center justify-center rounded-full text-[#818293] hover:bg-[#f5f7ff] hover:text-[#576aff] transition-colors cursor-pointer"
+                                        className="absolute top-5 right-5 sm:top-8 sm:right-8 w-8 h-8 flex items-center justify-center rounded-full text-[#818293] hover:bg-[#f5f7ff] hover:text-[#576aff] transition-colors cursor-pointer"
                                         aria-label="Actions"
                                     >
                                         <HiDotsVertical size={18} />
                                     </button>
 
                                     {openActionId === item.id && (
-                                        <div className="absolute top-16 right-8 z-10 w-40 bg-white rounded-lg shadow-lg border border-[#e7e7eb] py-2">
+                                        <div className="absolute top-14 right-5 sm:top-16 sm:right-8 z-10 w-40 bg-white rounded-lg shadow-lg border border-[#e7e7eb] py-2">
                                             <span
                                                 onClick={() => {
                                                     navigate("/viewproposals", {
@@ -482,10 +482,10 @@ function Dashboard() {
                             ))}
 
                         </div>
-                        <div className="flex items-center justify-between mt-10">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-10">
 
                             {/* Left Side */}
-                            <div className="px-4 py-2 bg-white border border-[#e7e7eb] rounded-lg text-sm text-[#555665] shadow-sm">
+                            <div className="px-4 py-2 bg-white border border-[#e7e7eb] rounded-lg text-sm text-[#555665] shadow-sm text-center sm:text-left">
                                 Showing{" "}
                                 <span className="font-semibold">{firstIndex + 1}</span>{" "}
                                 to{" "}
@@ -498,7 +498,7 @@ function Dashboard() {
                             </div>
 
                             {/* Right Side */}
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-wrap items-center justify-center gap-2">
 
 
                                 <button
@@ -542,7 +542,7 @@ function Dashboard() {
             {confirmDeleteId && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-[2px] px-4">
                     <div
-                        className="w-full max-w-sm rounded-[16px] p-8 flex flex-col items-center gap-5 text-center shadow-[0_4px_8px_rgba(214,214,214,0.4)]"
+                        className="w-full max-w-sm rounded-[16px] p-6 sm:p-8 flex flex-col items-center gap-5 text-center shadow-[0_4px_8px_rgba(214,214,214,0.4)]"
                         style={{
                             background:
                                 "url('/Images/background_img.svg') #ffffff center / cover no-repeat",
