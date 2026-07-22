@@ -42,10 +42,10 @@ function ViewProposalPage() {
         >
             <Sidebar />
 
-            <div className="max-w-[1591px] mx-auto px-10 py-8">
-                <div className="p-6 rounded-[16px] flex gap-6 items-start">
+            <div className="max-w-[1591px] mx-auto px-4 md:px-10 py-8">
+                <div className="p-6 rounded-[16px] flex flex-col lg:flex-row gap-6 items-stretch">
                     {/* Left Section */}
-                    <div className="w-[32%] shrink-0 flex flex-col">
+                    <div className="w-full lg:w-[32%] shrink-0 flex flex-col">
                         <h2 className="text-2xl font-bold mb-5 leading-none">
                             Proposal Details
                         </h2>
@@ -149,7 +149,7 @@ function ViewProposalPage() {
                                             },
                                         })
                                     }
-                                    className="h-[45px] px-4 text-sm font-medium text-white bg-[#576aff] rounded hover:bg-[#3d52f2]"
+                                    className="h-[45px] px-4 text-sm font-medium text-white bg-[#576aff] rounded hover:bg-[#3d52f2] cursor-pointer"
                                 >
                                     View Response
                                 </button>
@@ -157,7 +157,7 @@ function ViewProposalPage() {
 
                             <button
                                 onClick={() => navigate(-1)}
-                                className="h-[45px] px-4 text-sm font-medium text-white bg-[#576aff] rounded hover:bg-[#3d52f2]"
+                                className="h-[45px] px-4 text-sm font-medium text-white bg-[#576aff] rounded hover:bg-[#3d52f2] cursor-pointer"
                             >
                                 Back
                             </button>
@@ -165,25 +165,25 @@ function ViewProposalPage() {
                     </div>
 
                     {/* Right Section */}
-                    <div className="flex-1 flex flex-col">
-                        <h3 className="text-2xl font-bold mb-5 leading-none text-gray-500">
-                            Proposal Document
-                        </h3>
-
+                    <div className="w-full flex-1 flex flex-col">
                         {proposal?.document_url ? (
-                            <iframe
-                                src={proposal.document_url}
-                                width="95%"
-                                style={{ height: "580px" }}
-                                title="PDF Viewer"
-                                className="border rounded"
-                            />
+                            <div className="bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] p-4 flex flex-col h-full">
+                                <h3 className="font-medium mb-3">Proposal Document</h3>
+                                <iframe
+                                    src={proposal.document_url}
+                                    width="100%"
+                                    title="PDF Viewer"
+                                    className="border rounded flex-1 min-h-[420px] sm:min-h-[500px]"
+                                />
+                            </div>
                         ) : (
-                            <div
-                                className="border-2 border-dashed rounded flex items-center justify-center text-gray-400"
-                                style={{ height: "780px" }}
-                            >
-                                No document uploaded
+                            <div className="bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] p-6 flex flex-col h-full">
+                                <h3 className="font-medium mb-3">Proposal Document</h3>
+                                <div
+                                    className="border-2 border-dashed rounded flex items-center justify-center text-gray-400 flex-1 min-h-[300px] sm:min-h-[400px]"
+                                >
+                                    No document uploaded
+                                </div>
                             </div>
                         )}
                     </div>

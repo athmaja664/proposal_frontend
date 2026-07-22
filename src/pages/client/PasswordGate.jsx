@@ -67,13 +67,13 @@ function PasswordGate() {
                 style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}
             >
                 <Toaster position="top-center" />
-                <div className="flex flex-col items-center gap-[104px] w-full max-w-[1920px] min-h-screen mx-auto px-[164px] pt-[26px] pb-[167px] max-[1639px]:px-12 max-[1639px]:gap-[72px] max-[1200px]:px-10 max-[1200px]:pb-16 max-[640px]:px-5 max-[640px]:pb-12">
+                <div className="flex flex-col items-center gap-[104px] w-full max-w-[1920px] min-h-screen mx-auto px-[164px] pt-[26px] pb-[167px] max-[1639px]:px-12 max-[1639px]:gap-[72px] max-[1200px]:px-10 max-[1200px]:pb-16 max-[640px]:px-5 max-[640px]:pb-12 max-[640px]:gap-12 max-[400px]:px-4 max-[400px]:gap-10">
 
                     <header className="flex items-center justify-between w-full shrink-0 max-[640px]:flex-col max-[640px]:gap-5">
                         <a href="#" aria-label="ProposalHub home">
-                            <img src="/icons/logo.svg" alt="ProposalHub" className="h-11 w-auto" />
+                            <img src="/icons/logo.svg" alt="ProposalHub" className="h-11 w-auto max-[400px]:h-9" />
                         </a>
-                        <nav className="flex items-center gap-4" aria-label="Social media links">
+                        <nav className="flex items-center gap-4 max-[400px]:gap-3" aria-label="Social media links">
                             <a href="https://www.facebook.com/mindbeesteam/" aria-label="Facebook">
                                 <img src="/icons/facebook.svg" alt="Facebook" className="w-5 h-5 hover:opacity-70" />
                             </a>
@@ -93,7 +93,7 @@ function PasswordGate() {
                     </header>
 
                     <main className="flex justify-center w-full">
-                        <div className="flex justify-between items-center w-[1286px] max-w-full mx-auto max-[1200px]:flex-col max-[1200px]:gap-12">
+                        <div className="flex justify-between items-center w-[1286px] max-w-full mx-auto max-[1200px]:flex-col max-[1200px]:gap-12 max-[640px]:gap-8">
 
                             <section className="flex flex-col flex-[0_0_585px] max-w-[585px] w-full max-[1200px]:hidden" aria-hidden="true">
                                 <h1 className="mb-[26px] text-[46px] font-bold tracking-[-1.38px] leading-normal text-black">
@@ -115,7 +115,7 @@ function PasswordGate() {
                             </section>
 
                             <section
-                                className="flex flex-col items-start self-center flex-[0_0_496px] w-[496px] max-w-full px-[46px] py-[56px] bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] max-[1200px]:flex-none max-[1200px]:w-full max-[1200px]:max-w-[496px] max-[640px]:px-7 max-[640px]:py-10"
+                                className="flex flex-col items-start self-center flex-[0_0_496px] w-[496px] max-w-full px-[46px] py-[56px] bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] max-[1200px]:flex-none max-[1200px]:w-full max-[1200px]:max-w-[496px] max-[640px]:px-7 max-[640px]:py-10 max-[400px]:px-5 max-[400px]:py-8"
                                 aria-labelledby="gate-loading-title"
                             >
                                 <div className="flex flex-col items-center justify-center self-stretch gap-4 text-center py-8">
@@ -139,13 +139,13 @@ function PasswordGate() {
                 style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}
             >
                 <Toaster position="top-center" />
-                <div className="flex flex-col items-center gap-[104px] w-full max-w-[1920px] min-h-screen mx-auto px-[164px] pt-[26px] pb-[167px] max-[1639px]:px-12 max-[1639px]:gap-[72px] max-[1200px]:px-10 max-[1200px]:pb-16 max-[640px]:px-5 max-[640px]:pb-12">
+                <div className="flex flex-col items-center gap-[104px] w-full max-w-[1920px] min-h-screen mx-auto px-[164px] pt-[26px] pb-[167px] max-[1639px]:px-12 max-[1639px]:gap-[72px] max-[1200px]:px-10 max-[1200px]:pb-16 max-[640px]:px-5 max-[640px]:pb-12 max-[640px]:gap-12 max-[400px]:px-4 max-[400px]:gap-10">
 
                     <header className="flex items-center justify-between w-full shrink-0 max-[640px]:flex-col max-[640px]:gap-5">
                         <a href="#" aria-label="ProposalHub home">
-                            <img src="/icons/logo.svg" alt="ProposalHub" className="h-11 w-auto" />
+                            <img src="/icons/logo.svg" alt="ProposalHub" className="h-11 w-auto max-[400px]:h-9" />
                         </a>
-                        <nav className="flex items-center gap-4" aria-label="Social media links">
+                        <nav className="flex items-center gap-4 max-[400px]:gap-3" aria-label="Social media links">
                             <a href="https://www.facebook.com/mindbeesteam/" aria-label="Facebook">
                                 <img src="/icons/facebook.svg" alt="Facebook" className="w-5 h-5 hover:opacity-70" />
                             </a>
@@ -165,7 +165,7 @@ function PasswordGate() {
                     </header>
 
                     <main className="flex justify-center w-full">
-                        <div className="flex justify-between items-center w-[1286px] max-w-full mx-auto max-[1200px]:flex-col max-[1200px]:gap-12">
+                        <div className="flex justify-between items-center w-[1286px] max-w-full mx-auto max-[1200px]:flex-col max-[1200px]:gap-12 max-[640px]:gap-8">
 
                             <section className="flex flex-col flex-[0_0_585px] max-w-[585px] w-full max-[1200px]:hidden" aria-hidden="true">
                                 <h1 className="mb-[26px] text-[46px] font-bold tracking-[-1.38px] leading-normal text-black">
@@ -187,7 +187,7 @@ function PasswordGate() {
                             </section>
 
                             <section
-                                className="flex flex-col items-start self-center flex-[0_0_496px] w-[496px] max-w-full px-[46px] py-[56px] bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] max-[1200px]:flex-none max-[1200px]:w-full max-[1200px]:max-w-[496px] max-[640px]:px-7 max-[640px]:py-10"
+                                className="flex flex-col items-start self-center flex-[0_0_496px] w-[496px] max-w-full px-[46px] py-[56px] bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] max-[1200px]:flex-none max-[1200px]:w-full max-[1200px]:max-w-[496px] max-[640px]:px-7 max-[640px]:py-10 max-[400px]:px-5 max-[400px]:py-8"
                                 aria-labelledby="gate-error-title"
                             >
                                 <div className="flex flex-col items-center justify-center self-stretch gap-2 text-center py-8">
@@ -215,13 +215,13 @@ function PasswordGate() {
             style={{ background: "url('/Images/background_img.svg') #f9fafc center / cover no-repeat fixed" }}
         >
             <Toaster position="top-center" />
-            <div className="flex flex-col items-center gap-[104px] w-full max-w-[1920px] min-h-screen mx-auto px-[164px] pt-[26px] pb-[167px] max-[1639px]:px-12 max-[1639px]:gap-[72px] max-[1200px]:px-10 max-[1200px]:pb-16 max-[640px]:px-5 max-[640px]:pb-12">
+            <div className="flex flex-col items-center gap-[104px] w-full max-w-[1920px] min-h-screen mx-auto px-[164px] pt-[26px] pb-[167px] max-[1639px]:px-12 max-[1639px]:gap-[72px] max-[1200px]:px-10 max-[1200px]:pb-16 max-[640px]:px-5 max-[640px]:pb-12 max-[640px]:gap-12 max-[400px]:px-4 max-[400px]:gap-10">
 
                 <header className="flex items-center justify-between w-full shrink-0 max-[640px]:flex-col max-[640px]:gap-5">
                     <a href="#" aria-label="ProposalHub home">
-                        <img src="/icons/logo.svg" alt="ProposalHub" className="h-11 w-auto" />
+                        <img src="/icons/logo.svg" alt="ProposalHub" className="h-11 w-auto max-[400px]:h-9" />
                     </a>
-                    <nav className="flex items-center gap-4" aria-label="Social media links">
+                    <nav className="flex items-center gap-4 max-[400px]:gap-3" aria-label="Social media links">
                         <a href="https://www.facebook.com/mindbeesteam/" aria-label="Facebook">
                             <img src="/icons/facebook.svg" alt="Facebook" className="w-5 h-5 hover:opacity-70" />
                         </a>
@@ -241,7 +241,7 @@ function PasswordGate() {
                 </header>
 
                 <main className="flex justify-center w-full">
-                    <div className="flex justify-between items-center w-[1286px] max-w-full mx-auto max-[1200px]:flex-col max-[1200px]:gap-12">
+                    <div className="flex justify-between items-center w-[1286px] max-w-full mx-auto max-[1200px]:flex-col max-[1200px]:gap-12 max-[640px]:gap-8">
 
                         <section className="flex flex-col flex-[0_0_585px] max-w-[585px] w-full max-[1200px]:hidden" aria-hidden="true">
                             <h1 className="mb-[26px] text-[46px] font-bold tracking-[-1.38px] leading-normal text-black">
@@ -263,18 +263,18 @@ function PasswordGate() {
                         </section>
 
                         <section
-                            className="flex flex-col items-start self-center flex-[0_0_496px] w-[496px] max-w-full px-[46px] py-[56px] bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] max-[1200px]:flex-none max-[1200px]:w-full max-[1200px]:max-w-[496px] max-[640px]:px-7 max-[640px]:py-10"
+                            className="flex flex-col items-start self-center flex-[0_0_496px] w-[496px] max-w-full px-[46px] py-[56px] bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] max-[1200px]:flex-none max-[1200px]:w-full max-[1200px]:max-w-[496px] max-[640px]:px-7 max-[640px]:py-10 max-[400px]:px-5 max-[400px]:py-8"
                             aria-labelledby="gate-title"
                         >
                             <h2
                                 id="gate-title"
-                                className="self-stretch mb-8 text-[26px] font-semibold leading-normal text-[#1e1e21] text-center"
+                                className="self-stretch mb-8 text-[26px] font-semibold leading-normal text-[#1e1e21] text-center max-[400px]:text-2xl max-[400px]:mb-6"
                             >
                                 Unlock to View
                             </h2>
 
                             <div className="flex flex-col items-start self-stretch w-full gap-[10px]">
-                                <label className="block text-lg font-medium leading-normal text-[#555665]" htmlFor="gate-password">
+                                <label className="block text-lg font-medium leading-normal text-[#555665] max-[400px]:text-base" htmlFor="gate-password">
                                     Password
                                 </label>
                                 <div className="flex items-center gap-[10px] h-[54px] px-[10px] w-full bg-white border border-[#c3c5d0] rounded-[4px] transition-colors focus-within:border-[#576aff]">
@@ -302,7 +302,7 @@ function PasswordGate() {
                             <button
                                 onClick={handleVerifyPassword}
                                 disabled={verify}
-                                className="flex items-center justify-center self-stretch w-[410px] h-[42px] mt-[28px] p-[10px] text-lg font-bold text-white bg-[#576aff] border-none rounded-[3px] cursor-pointer transition-colors hover:bg-[#3d52f2] active:scale-[0.995] disabled:opacity-70 disabled:cursor-not-allowed"
+                                className="flex items-center justify-center self-stretch w-full max-w-[410px] h-[42px] mt-[28px] p-[10px] text-lg font-bold text-white bg-[#576aff] border-none rounded-[3px] cursor-pointer transition-colors hover:bg-[#3d52f2] active:scale-[0.995] disabled:opacity-70 disabled:cursor-not-allowed"
                             >
                                 {verify ? 'Unlocking...' : 'Unlock Proposal'}
                             </button>

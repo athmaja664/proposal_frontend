@@ -96,13 +96,13 @@ function Sidebar() {
             onClick={() => setShowMenu(prev => !prev)}
             onContextMenu={(e) => e.preventDefault()}
           >
-            <button className="text-[#818293] hover:text-[#576aff] transition-colors">
+            <button className="text-[#818293] hover:text-[#576aff] transition-colors cursor-pointer">
               <MdAccountCircle size={30} />
             </button>
 
             {/* Dropdown Menu */}
             {showMenu && (
-              <div className="absolute top-11 right-0 bg-white rounded-lg shadow-lg py-2 w-44 z-50 border border-[#e4e4eb]">
+              <div className="absolute top-11 right-0 bg-white rounded-lg shadow-lg py-2 w-44 z-50 border border-[#e4e4eb] cursor-pointer">
                 <p className="px-4 py-2 text-sm font-semibold text-[#1e1e21] border-b border-[#e4e4eb]">{admin.name}</p>
                 <button
                   onClick={() => { setShowEditProfile(true); setShowMenu(false) }}
@@ -142,7 +142,7 @@ function Sidebar() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="px-4 py-2 text-sm font-medium text-[#555665] border-2 border-[#d9dce8] rounded-[8px] hover:bg-[#f9fafc] transition-colors"
+                className="px-4 py-2 text-sm font-medium text-[#555665] border-2 border-[#d9dce8] rounded-[8px] hover:bg-[#f9fafc] transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -151,7 +151,7 @@ function Sidebar() {
                   setShowLogoutConfirm(false)
                   handleLogout()
                 }}
-                className="px-4 py-2 text-sm font-medium text-white bg-[#576aff] rounded-[8px] hover:bg-[#3d52f2] transition-colors"
+                className="px-4 py-2 text-sm font-medium text-white bg-[#576aff] rounded-[8px] hover:bg-[#3d52f2] transition-colors cursor-pointer"
               >
                 Logout
               </button>

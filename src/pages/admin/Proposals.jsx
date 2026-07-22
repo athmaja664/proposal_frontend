@@ -16,6 +16,9 @@ function Proposals() {
     //const [showViewModal, setShowViewModal] = useState(false)
     const [searchKey, setSearchKey] = useState("")
     const [statusFilter, setStatusFilter] = useState("All Status")
+    const [filterDate, setFilterDate] = useState("")
+    const [showSuggestions, setShowSuggestions] = useState(false)
+    const searchBoxRef = useRef(null)
     //get
     const [proposals, setProposals] = useState([])
     //edit/view
@@ -32,6 +35,9 @@ function Proposals() {
     const [openActionId, setOpenActionId] = useState(null)
     // ref for the currently open action dropdown, used to detect outside clicks
     const actionRef = useRef(null)
+   //cursor-status
+   const [showStatusDropdown, setShowStatusDropdown] = useState(false)
+    const statusDropdownRef = useRef(null)
     //pagination
     const [currentPage, setCurrentPage] = useState(1)
     const cardsPerPage = 8
@@ -84,7 +90,21 @@ function Proposals() {
             statusFilter === "All Status" ||
             item.status_name === statusFilter
         )
+        &&
+        (
+            filterDate === "" ||
+            item.created_at.slice(0, 10) === filterDate
+        )
     )
+
+    // build unique client/project name suggestions matching the typed search text
+    const searchSuggestions = searchKey
+        ? [...new Set(
+            proposals.flatMap((item) => [item.client_name, item.project_name])
+        )].filter((name) =>
+            name && name.toLowerCase().includes(searchKey.toLowerCase())
+        ).slice(0, 6)
+        : []
 
     //pagination calculations
     const lastIndex = currentPage * cardsPerPage;
@@ -102,6 +122,11 @@ function Proposals() {
         setCurrentPage(1)
     }, [statusFilter])
 
+    //reset to page 1 when date filter changes
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [filterDate])
+
     //close action dropdown when clicking anywhere outside it
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -117,6 +142,30 @@ function Proposals() {
         }
     }, [openActionId])
 
+    //close search suggestions when clicking outside the search box
+    useEffect(() => {
+        const handleClickOutsideSearch = (e) => {
+            if (searchBoxRef.current && !searchBoxRef.current.contains(e.target)) {
+                setShowSuggestions(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutsideSearch)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutsideSearch)
+        }
+    }, [])
+
+    useEffect(() => {
+        const handleClickOutsideStatus = (e) => {
+            if (statusDropdownRef.current && !statusDropdownRef.current.contains(e.target)) {
+                setShowStatusDropdown(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutsideStatus)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutsideStatus)
+        }
+    }, [])
     const getStatusStyle = (status) => {
         if (status === 'Accepted') return 'bg-blue-100 text-blue-700 border border-blue-200'
         if (status === 'Sent') return 'bg-[#bcefb0] text-[#3d6b35] border border-[#a7d59d]'
@@ -146,24 +195,110 @@ function Proposals() {
                     <div className="flex flex-wrap items-end gap-6 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] mb-8">
                         <div className="flex flex-col gap-2 flex-1 min-w-[220px]">
                             <label className="text-sm font-medium text-[#555665]">Search</label>
+                            <div className="relative" ref={searchBoxRef}>
+                                <input
+                                    type="text"
+                                    placeholder="Search proposals/Clients"
+                                    value={searchKey}
+                                    className="w-full px-4 py-3 pr-10 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
+                                    onChange={(e) => {
+                                        setSearchKey(e.target.value)
+                                        setShowSuggestions(true)
+                                    }}
+                                    onFocus={() => setShowSuggestions(true)}
+                                />
+                                {searchKey && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setSearchKey("")
+                                            setShowSuggestions(false)
+                                        }}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9698a6] hover:text-[#555665] cursor-pointer text-lg leading-none"
+                                        aria-label="Clear search"
+                                    >
+                                        &times;
+                                    </button>
+                                )}
+                                {showSuggestions && searchSuggestions.length > 0 && (
+                                    <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-[#e7e7eb] z-20 overflow-hidden">
+                                        {searchSuggestions.map((name, index) => (
+                                            <div
+                                                key={index}
+                                                onClick={() => {
+                                                    setSearchKey(name)
+                                                    setShowSuggestions(false)
+                                                }}
+                                                className="px-4 py-2 text-sm text-[#3f4050] cursor-pointer hover:bg-[#f5f7ff]"
+                                            >
+                                                {name}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-2 min-w-[180px]">
+                            <label className="text-sm font-medium text-[#555665]">Proposal Add Date</label>
                             <input
-                                type="text"
-                                placeholder="Search proposals"
-                                className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
-                                onChange={(e) => setSearchKey(e.target.value)}
+                                type="date"
+                                value={filterDate}
+                                className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff] cursor-pointer"
+                                onChange={(e) => setFilterDate(e.target.value)}
                             />
                         </div>
-                        <div className="flex flex-col gap-2 min-w-[200px]">
-                            <label className="text-sm font-medium text-[#555665]">Status</label>
-                            <select
-                                className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
-                                onChange={(e) => setStatusFilter(e.target.value)}
+                        
+<div className="flex flex-col gap-2 min-w-[200px]">
+    <label className="text-sm font-medium text-[#555665]">Status</label>
+    <div className="relative" ref={statusDropdownRef}>
+        <button
+            type="button"
+            onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+            className="w-full px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff] cursor-pointer bg-white flex justify-between items-center"
+        >
+            {statusFilter}
+            <span className="text-[#818293]">▾</span>
+        </button>
+        {showStatusDropdown && (
+            <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-[#e7e7eb] z-20 overflow-hidden max-h-60 overflow-y-auto">
+                <div
+                    onClick={() => {
+                        setStatusFilter("All Status")
+                        setShowStatusDropdown(false)
+                    }}
+                    className="px-4 py-2 text-sm cursor-pointer hover:bg-[#f5f7ff]"
+                >
+                    All Status
+                </div>
+                {statuses.map((status) => (
+                    <div
+                        key={status.id}
+                        onClick={() => {
+                            setStatusFilter(status.status_name)
+                            setShowStatusDropdown(false)
+                        }}
+                        className="px-4 py-2 text-sm cursor-pointer hover:bg-[#f5f7ff]"
+                    >
+                        {status.status_name}
+                    </div>
+                ))}
+            </div>
+        )}
+    </div>
+</div>
+                        <div className="flex gap-3">
+                            <button
+                                type="button"
+                                className="px-5 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm font-medium text-[#555665] hover:bg-[#f9fafc] cursor-pointer"
+                                onClick={() => {
+                                    setSearchKey("")
+                                    setFilterDate("")
+                                    setStatusFilter("All Status")
+                                    setCurrentPage(1)
+                                }}
                             >
-                                <option>All Status</option>
-                                {statuses.map((status) => (
-                                    <option key={status.id}>{status.status_name}</option>
-                                ))}
-                            </select>
+                                Clear
+                            </button>
                         </div>
                     </div>
 
@@ -253,7 +388,7 @@ function Proposals() {
                                                     setConfirmDeleteId(item.id)
                                                     setOpenActionId(null)
                                                 }}
-                                                className="block px-4 py-2 text-sm text-red-500 cursor-pointer hover:bg-[#f5f7ff]"
+                                                className="block px-4 py-2 text-sm text-red-500 cursor-pointer hover:bg-[#f5f7ff] "
                                             >
                                                 Delete
                                             </span>
@@ -293,10 +428,11 @@ function Proposals() {
                             {/* Right Side */}
                             <div className="flex items-center gap-2">
 
+                                  
                                 <button
                                     onClick={() => setCurrentPage(currentPage - 1)}
                                     disabled={currentPage === 1}
-                                    className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff]"
+                                    className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff] cursor-pointer disabled:cursor-not-allowed"
                                 >
                                     &#10094;
                                 </button>
@@ -305,10 +441,10 @@ function Proposals() {
                                     <button
                                         key={index}
                                         onClick={() => setCurrentPage(index + 1)}
-                                        className={`w-10 h-10 rounded-lg text-sm font-medium transition
+                                        className={`w-10 h-10 rounded-lg text-sm font-medium transition cursor-pointer
           ${currentPage === index + 1
                                                 ? "bg-[#576aff] text-white"
-                                                : "bg-white border border-[#d9dce8] text-[#555665] hover:bg-[#f5f7ff]"
+                                                : "bg-white border border-[#d9dce8] text-[#555665] hover:bg-[#f5f7ff] cursor-pointer" 
                                             }`}
                                     >
                                         {index + 1}
@@ -318,7 +454,7 @@ function Proposals() {
                                 <button
                                     onClick={() => setCurrentPage(currentPage + 1)}
                                     disabled={currentPage === totalPages}
-                                    className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff]"
+                                    className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff] cursor-pointer disabled:cursor-not-allowed"
                                 >
                                     &#10095;
                                 </button>

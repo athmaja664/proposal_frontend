@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Sidebar from "../../components/Sidebar";
 import { clearEmptyLogsAPI, getAuditLogsAPI } from "../../../services/allAPI";
 import Spinner from "../../components/Spinner";
@@ -14,6 +14,15 @@ function AuditLogs() {
     const token = localStorage.getItem('token')
     // controls the custom "Clear Empty Logs" confirmation popup
     const [showClearConfirm, setShowClearConfirm] = useState(false)
+    //autofill
+    const [showSuggestions, setShowSuggestions] = useState(false)
+    const searchBoxRef = useRef(null)
+    
+    //cursor-status 
+    const [showPerformedByDropdown, setShowPerformedByDropdown] = useState(false)
+    const performedByDropdownRef = useRef(null)
+    const [showActionDropdown, setShowActionDropdown] = useState(false)
+    const actionDropdownRef = useRef(null)
     //pagination
     const [currentPage, setCurrentPage] = useState(1)
     const logsPerPage = 10
@@ -31,6 +40,26 @@ function AuditLogs() {
         getLogs()
     }, [])
 
+    const searchSuggestions = searchKey
+        ? [...new Set(
+            logs.flatMap((log) => [log.client_name, log.project_name])
+        )].filter((name) =>
+            name && name.toLowerCase().includes(searchKey.toLowerCase())
+        ).slice(0, 6)
+        : []
+
+    useEffect(() => {
+        const handleClickOutsideSearch = (e) => {
+            if (searchBoxRef.current && !searchBoxRef.current.contains(e.target)) {
+                setShowSuggestions(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutsideSearch)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutsideSearch)
+        }
+    }, [])
+
     const getActionStyle = (action) => {
         if (action === 'proposal_created') return 'bg-blue-100 text-blue-700'
         if (action === 'link_generated') return 'bg-yellow-100 text-yellow-700'
@@ -40,7 +69,22 @@ function AuditLogs() {
         if (action === 'signature_submitted') return 'bg-green-100 text-green-700'
         return 'bg-gray-100 text-gray-700'
     }
+   
+const performedByOptions = [
+    { value: 'All', label: 'All Users' },
+    { value: 'admin', label: 'Admin' },
+    { value: 'client', label: 'Client' },
+]
 
+const actionOptions = [
+    { value: 'All', label: 'All Actions' },
+    { value: 'proposal_created', label: 'Proposal Created' },
+    { value: 'link_generated', label: 'Link Generated' },
+    { value: 'link_revoked', label: 'Link Revoked' },
+    { value: 'link_unrevoked', label: 'Link Unrevoked' },
+    { value: 'client_accessed', label: 'Client Accessed' },
+    { value: 'signature_submitted', label: 'Signature Submitted' },
+]
     const filteredLogs = logs.filter((log) => {
         const matchSearch =
             log.client_name?.toLowerCase().includes(searchKey.toLowerCase()) ||
@@ -74,7 +118,7 @@ function AuditLogs() {
         setCurrentPage(1)
     }, [searchKey, filterPerformedBy, filterAction, filterDate])
 
-    // builds a compact page list like [1, '...', 4, 5, 6, '...', 12] instead of every page number
+    
     const getPageNumbers = () => {
         const pages = []
         const delta = 1 // how many neighbours to show around current page
@@ -92,6 +136,21 @@ function AuditLogs() {
         }
         return pages
     }
+    
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (performedByDropdownRef.current && !performedByDropdownRef.current.contains(e.target)) {
+                setShowPerformedByDropdown(false)
+            }
+            if (actionDropdownRef.current && !actionDropdownRef.current.contains(e.target)) {
+                setShowActionDropdown(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [])
 
     const handleClearEmpty = async () => {
         setShowClearConfirm(true)
@@ -127,41 +186,110 @@ function AuditLogs() {
                 <div className="flex flex-wrap items-end gap-6 p-8 bg-white rounded-[16px] shadow-[0_4px_8px_0_rgba(214,214,214,0.4)] mb-8">
                     <div className="flex flex-col gap-2 flex-1 min-w-[220px]">
                         <label className="text-sm font-medium text-[#555665]">Search</label>
-                        <input
-                            type="text"
-                            placeholder="Search by client or project"
-                            className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
-                            onChange={(e) => setSearchKey(e.target.value)}
-                        />
+                        <div className="relative" ref={searchBoxRef}>
+                            <input
+                                type="text"
+                                placeholder="Search by client or project"
+                                value={searchKey}
+                                className="w-full px-4 py-3 pr-10 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
+                                onChange={(e) => {
+                                    setSearchKey(e.target.value)
+                                    setShowSuggestions(true)
+                                }}
+                                onFocus={() => setShowSuggestions(true)}
+                            />
+                            {searchKey && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSearchKey("")
+                                        setShowSuggestions(false)
+                                    }}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9698a6] hover:text-[#555665] cursor-pointer text-lg leading-none"
+                                    aria-label="Clear search"
+                                >
+                                    &times;
+                                </button>
+                            )}
+                            {showSuggestions && searchSuggestions.length > 0 && (
+                                <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-[#e7e7eb] z-20 overflow-hidden">
+                                    {searchSuggestions.map((name, index) => (
+                                        <div
+                                            key={index}
+                                            onClick={() => {
+                                                setSearchKey(name)
+                                                setShowSuggestions(false)
+                                            }}
+                                            className="px-4 py-2 text-sm text-[#3f4050] cursor-pointer hover:bg-[#f5f7ff]"
+                                        >
+                                            {name}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
 
-                    <div className="flex flex-col gap-2 min-w-[180px]">
-                        <label className="text-sm font-medium text-[#555665]">Performed By</label>
-                        <select
-                            className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
-                            onChange={(e) => setFilterPerformedBy(e.target.value)}
-                        >
-                            <option value="All">All Users</option>
-                            <option value="admin">Admin</option>
-                            <option value="client">Client</option>
-                        </select>
-                    </div>
 
-                    <div className="flex flex-col gap-2 min-w-[220px]">
-                        <label className="text-sm font-medium text-[#555665]">Action</label>
-                        <select
-                            className="px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff]"
-                            onChange={(e) => setFilterAction(e.target.value)}
-                        >
-                            <option value="All">All Actions</option>
-                            <option value="proposal_created">Proposal Created</option>
-                            <option value="link_generated">Link Generated</option>
-                            <option value="link_revoked">Link Revoked</option>
-                            <option value="link_unrevoked">Link Unrevoked</option>
-                            <option value="client_accessed">Client Accessed</option>
-                            <option value="signature_submitted">Signature Submitted</option>
-                        </select>
+<div className="flex flex-col gap-2 min-w-[180px]">
+    <label className="text-sm font-medium text-[#555665]">Performed By</label>
+    <div className="relative" ref={performedByDropdownRef}>
+        <button
+            type="button"
+            onClick={() => setShowPerformedByDropdown(!showPerformedByDropdown)}
+            className="w-full px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff] cursor-pointer bg-white flex justify-between items-center"
+        >
+            {performedByOptions.find(o => o.value === filterPerformedBy)?.label}
+            <span className="text-[#818293]">▾</span>
+        </button>
+        {showPerformedByDropdown && (
+            <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-[#e7e7eb] z-20 overflow-hidden">
+                {performedByOptions.map((opt) => (
+                    <div
+                        key={opt.value}
+                        onClick={() => {
+                            setFilterPerformedBy(opt.value)
+                            setShowPerformedByDropdown(false)
+                        }}
+                        className="px-4 py-2 text-sm cursor-pointer hover:bg-[#f5f7ff]"
+                    >
+                        {opt.label}
                     </div>
+                ))}
+            </div>
+        )}
+    </div>
+</div>
+
+<div className="flex flex-col gap-2 min-w-[220px]">
+    <label className="text-sm font-medium text-[#555665]">Action</label>
+    <div className="relative" ref={actionDropdownRef}>
+        <button
+            type="button"
+            onClick={() => setShowActionDropdown(!showActionDropdown)}
+            className="w-full px-4 py-3 rounded-[8px] border-2 border-[#d9dce8] text-sm text-[#3f4050] outline-none focus:border-[#576aff] cursor-pointer bg-white flex justify-between items-center"
+        >
+            {actionOptions.find(o => o.value === filterAction)?.label}
+            <span className="text-[#818293]">▾</span>
+        </button>
+        {showActionDropdown && (
+            <div className="absolute top-full left-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-[#e7e7eb] z-20 overflow-hidden max-h-60 overflow-y-auto">
+                {actionOptions.map((opt) => (
+                    <div
+                        key={opt.value}
+                        onClick={() => {
+                            setFilterAction(opt.value)
+                            setShowActionDropdown(false)
+                        }}
+                        className="px-4 py-2 text-sm cursor-pointer hover:bg-[#f5f7ff]"
+                    >
+                        {opt.label}
+                    </div>
+                ))}
+            </div>
+        )}
+    </div>
+</div>
 
                     <div className="flex flex-col gap-2 min-w-[180px]">
                         <label className="text-sm font-medium text-[#555665]">Date</label>
@@ -253,7 +381,7 @@ function AuditLogs() {
                             <button
                                 onClick={() => setCurrentPage(currentPage - 1)}
                                 disabled={currentPage === 1}
-                                className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff]"
+                                className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff] cursor-pointer disabled:cursor-not-allowed"
                             >
                                 &#10094;
                             </button>
@@ -270,10 +398,10 @@ function AuditLogs() {
                                     <button
                                         key={page}
                                         onClick={() => setCurrentPage(page)}
-                                        className={`w-10 h-10 rounded-lg text-sm font-medium transition
+                                        className={`w-10 h-10 rounded-lg text-sm font-medium transition cursor-pointer
           ${currentPage === page
                                                 ? "bg-[#576aff] text-white"
-                                                : "bg-white border border-[#d9dce8] text-[#555665] hover:bg-[#f5f7ff]"
+                                                : "bg-white border border-[#d9dce8] text-[#555665] hover:bg-[#f5f7ff] cursor-pointer"
                                             }`}
                                     >
                                         {page}
@@ -284,7 +412,7 @@ function AuditLogs() {
                             <button
                                 onClick={() => setCurrentPage(currentPage + 1)}
                                 disabled={currentPage === totalPages}
-                                className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff]"
+                                className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff] cursor-pointer disabled:cursor-not-allowed"
                             >
                                 &#10095;
                             </button>

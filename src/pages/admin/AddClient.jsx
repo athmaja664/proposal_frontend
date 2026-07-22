@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar";
 import EditClientModal from "../../components/EditClientModal";
-import { HiDotsVertical } from "react-icons/hi";
 import { FiMail, FiPhone } from "react-icons/fi";
 import { deleteClientAPI, getclientAPI } from "../../../services/allAPI";
 import toast from "react-hot-toast";
@@ -25,6 +24,8 @@ function AddClient() {
     const [confirmDeleteId, setConfirmDeleteId] = useState(null)
     const [currentPage, setCurrentPage] = useState(1)
     const [clientData, setClientData] = useState([])
+    const [searchTerm, setSearchTerm] = useState("")
+    const [suggestions, setSuggestions] = useState([])
     const token = localStorage.getItem('token')
     const getClient = async () => {
         const reqHeader = { Authorization: `Bearer ${token}` }
@@ -33,6 +34,23 @@ function AddClient() {
             setClientData(response.data)
         }
     }
+    
+    const handleSearch = (e) => {
+    const value = e.target.value
+    setSearchTerm(value)
+
+    if (value === "") {
+        setSuggestions([])
+        return
+    }
+
+    const result = clientData.filter((item) =>
+        item.name?.toLowerCase().includes(value.toLowerCase()) ||
+        item.email?.toLowerCase().includes(value.toLowerCase())
+    )
+
+    setSuggestions(result)
+}
 
     const handleDelete = async (id) => {
         const reqHeader = { Authorization: `Bearer ${token}` }
@@ -48,11 +66,19 @@ function AddClient() {
     useEffect(() => {
         getClient()
     }, [])
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [searchTerm])
+    const filteredClients = clientData.filter((item) =>
+        item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+
     const cardsPerPage = 8
     const lastIndex = currentPage * cardsPerPage
     const firstIndex = lastIndex - cardsPerPage
-    const currentProposal = clientData.slice(firstIndex, lastIndex)
-    const totalPages = Math.ceil(clientData.length / cardsPerPage)
+    const currentProposal = filteredClients.slice(firstIndex, lastIndex)
+    const totalPages = Math.ceil(filteredClients.length / cardsPerPage)
 
     return (
         <div
@@ -76,22 +102,51 @@ function AddClient() {
                 {/* Search Section */}
                 <div className="flex flex-wrap items-end gap-6 p-8 bg-white rounded-2xl shadow-[0_4px_8px_rgba(214,214,214,0.4)] mb-8">
 
-                    <div className="flex flex-col gap-2 flex-1 min-w-[220px]">
-                        <label className="text-sm font-medium text-[#555665]">
-                            Search
-                        </label>
+                  <div className="relative w-full">
+    <input
+        type="text"
+        placeholder="Search clients"
+        value={searchTerm}
+        onChange={handleSearch}
+        className="px-4 py-3 pr-10 rounded-lg border-2 border-[#d9dce8] outline-none focus:border-[#576aff] w-full"
+    />
 
-                        <input
-                            type="text"
-                            placeholder="Search clients"
-                            className="px-4 py-3 rounded-lg border-2 border-[#d9dce8] outline-none focus:border-[#576aff]"
-                        />
-                    </div>
+    {searchTerm && (
+        <button
+            type="button"
+            onClick={() => {
+                setSearchTerm("")
+                setSuggestions([])
+            }}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9698a6] hover:text-[#555665] cursor-pointer text-lg leading-none"
+            aria-label="Clear search"
+        >
+            &times;
+        </button>
+    )}
+
+    {suggestions.length > 0 && (
+        <div className="absolute top-full left-0 w-full bg-white border border-[#d9dce8] rounded-lg shadow-lg mt-1 z-20">
+            {suggestions.map((item) => (
+                <div
+                    key={item.id}
+                    onClick={() => {
+                        setSearchTerm(item.name)
+                        setSuggestions([])
+                    }}
+                    className="px-4 py-2 text-sm text-[#3f4050] cursor-pointer hover:bg-[#f5f7ff]"
+                >
+                    {item.name}
+                </div>
+            ))}
+        </div>
+    )}
+</div>
 
                 </div>
 
                 <h2 className="text-xl font-semibold mb-5">
-                    Client List
+                    Clients List
                 </h2>
 
                 {/* Cards */}
@@ -101,11 +156,7 @@ function AddClient() {
                     {currentProposal.map((item) => (
                         <div key={item.id} className="group relative p-7 bg-white rounded-2xl border border-[#f0f0f3] shadow-[0_2px_6px_rgba(214,214,214,0.3)] hover:shadow-[0_8px_20px_rgba(87,106,255,0.12)] hover:-translate-y-0.5 transition-all duration-200">
 
-                            <button className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full text-[#818293] hover:bg-[#f5f7ff] hover:text-[#576aff] transition-colors">
-                                <HiDotsVertical size={18} />
-                            </button>
-
-                            <div className="flex items-center gap-3 mb-5 pr-8">
+                            <div className="flex items-center gap-3 mb-5">
                                 <div className={`w-12 h-12 shrink-0 rounded-full bg-gradient-to-br ${getAvatarColor(item.id)} text-white flex items-center justify-center font-semibold text-sm shadow-sm`}>
                                     {item.name?.charAt(0).toUpperCase()}
                                 </div>
@@ -161,31 +212,31 @@ function AddClient() {
 
                     <div className="px-4 py-2 bg-white border border-[#e7e7eb] rounded-lg text-sm text-[#555665] shadow-sm">
                         Showing{" "}
-                        <span className="font-semibold">{clientData.length ? firstIndex + 1 : 0}</span>{" "}
+                        <span className="font-semibold">{filteredClients.length ? firstIndex + 1 : 0}</span>{" "}
                         to{" "}
                         <span className="font-semibold">
-                            {Math.min(lastIndex, clientData.length)}
+                            {Math.min(lastIndex, filteredClients.length)}
                         </span>{" "}
                         of{" "}
-                        <span className="font-semibold">{clientData.length}</span>{" "}
+                        <span className="font-semibold">{filteredClients.length}</span>{" "}
                         Entries
                     </div>
 
                     <div className="flex items-center gap-2">
 
-                        <button
-                            onClick={() => setCurrentPage(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff]"
-                        >
-                            &#10094;
-                        </button>
+                         <button
+                                    onClick={() => setCurrentPage(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff] cursor-pointer disabled:cursor-not-allowed"
+                                >
+                                    &#10094;
+                                </button>
 
                         {Array.from({ length: totalPages }, (_, index) => (
                             <button
                                 key={index}
                                 onClick={() => setCurrentPage(index + 1)}
-                                className={`w-10 h-10 rounded-lg text-sm font-medium transition
+                                className={`w-10 h-10 rounded-lg text-sm font-medium transition cursor-pointer
                                     ${currentPage === index + 1
                                         ? "bg-[#576aff] text-white"
                                         : "bg-white border border-[#d9dce8] text-[#555665] hover:bg-[#f5f7ff]"
@@ -196,12 +247,12 @@ function AddClient() {
                         ))}
 
                         <button
-                            onClick={() => setCurrentPage(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff]"
-                        >
-                            &#10095;
-                        </button>
+                                    onClick={() => setCurrentPage(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                    className="w-10 h-10 flex items-center justify-center rounded-lg border border-[#d9dce8] bg-white disabled:opacity-50 hover:bg-[#f5f7ff] cursor-pointer disabled:cursor-not-allowed"
+                                >
+                                    &#10095;
+                                </button>
 
                     </div>
 
@@ -234,13 +285,13 @@ function AddClient() {
                         <div className="flex justify-end gap-3">
                             <button
                                 onClick={() => setConfirmDeleteId(null)}
-                                className="px-4 py-2 text-sm font-medium text-[#555665] border-2 border-[#d9dce8] rounded-[8px] hover:bg-[#f9fafc] transition-colors"
+                                className="px-4 py-2 text-sm font-medium text-[#555665] border-2 border-[#d9dce8] rounded-[8px] hover:bg-[#f9fafc] transition-colors cursor-pointer"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={() => handleDelete(confirmDeleteId)}
-                                className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-[8px] hover:bg-red-600 transition-colors"
+                                className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-[8px] hover:bg-red-600 transition-colors cursor-pointer"
                             >
                                 Yes, delete
                             </button>

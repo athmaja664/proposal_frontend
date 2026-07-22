@@ -25,13 +25,14 @@ function Login() {
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("admin", JSON.stringify(response.data.user));
-        toast.success('Welcome Admin')
+        // toast.success('Welcome Admin')
         setTimeout(() => {
+          // toast.success('Welcome Admin')
           navigate("/dashboard")
         }, 1000)
       } else {
         toast.error(response.data.message || 'Invalid email or password')
-        //setLoading(false)
+        setLoading(false)
       }
     } catch (err) {
       console.log(err);
@@ -47,7 +48,7 @@ function Login() {
     >
       <Toaster position="top-center" />
 
-      <div className="flex flex-col items-center gap-[104px] w-full max-w-[1920px] min-h-screen mx-auto px-[164px] pt-[26px] pb-[167px] max-[1639px]:px-12 max-[1639px]:gap-[72px] max-[1200px]:px-10 max-[1200px]:pb-16 max-[640px]:px-5 max-[640px]:pb-12">
+      <div className="flex flex-col items-center gap-[104px] w-full max-w-[1920px] min-h-screen mx-auto px-[164px] pt-[26px] pb-[167px] max-[1639px]:px-12 max-[1639px]:gap-[72px] max-[1200px]:px-10 max-[1200px]:pb-16 max-[640px]:px-5 max-[640px]:pb-12 max-[640px]:gap-12 max-[400px]:px-4 max-[400px]:gap-10">
 
         {/* navbar */}
 
@@ -58,12 +59,12 @@ function Login() {
             <img
               src="/icons/logo.svg"
               alt="ProposalHub"
-              className="h-11 w-auto"
+              className="h-11 w-auto max-[400px]:h-9"
             />
           </a>
 
           {/* Social Icons */}
-          <nav className="flex items-center gap-4" aria-label="Social media links">
+          <nav className="flex items-center gap-4 max-[400px]:gap-3" aria-label="Social media links">
             <a href="https://www.facebook.com/mindbeesteam/" aria-label="Facebook">
               <img src="/icons/facebook.svg" alt="Facebook" className="w-5 h-5 hover:opacity-70" />
             </a>
@@ -88,7 +89,7 @@ function Login() {
         </header>
 
         <main className="flex justify-center w-full">
-          <div className="flex justify-between items-stretch w-[1286px] max-w-full h-[599px] mx-auto max-[1200px]:flex-col-reverse max-[1200px]:items-center max-[1200px]:h-auto max-[1200px]:gap-12">
+          <div className="flex justify-between items-stretch w-[1286px] max-w-full h-[599px] mx-auto max-[1200px]:flex-col-reverse max-[1200px]:items-center max-[1200px]:h-auto max-[1200px]:gap-12 max-[640px]:gap-8">
 
             {/* hero */}
             <section
@@ -99,10 +100,10 @@ function Login() {
                 id="hero-title"
                 className="mb-[26px] text-[46px] font-bold tracking-[-1.38px] leading-normal text-black"
               >
-                Proposal
+                Proposal the header theose time
               </h1>
               <p className="w-[456px] max-w-full mb-[26px] text-base font-normal leading-normal text-[#626367] capitalize">
-                Welcome to the Proposal Submission &amp; Evaluation System
+                Welcome to the Proposal Submission & Evaluation System
               </p>
               <p className="w-[456px] max-w-full mb-0 text-base font-normal leading-normal text-[#626367] capitalize">
                 A one-stop platform to submit, track and manage your project proposals efficiently
@@ -118,18 +119,18 @@ function Login() {
 
             {/* form */}
             <section
-              className="flex flex-col items-start self-center flex-[0_0_585px] w-[585px] max-w-full h-[589px] px-[46px] pt-[65px] pb-[87px] bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] max-[1200px]:flex-none max-[1200px]:w-full max-[1200px]:max-w-[585px] max-[1200px]:h-auto max-[640px]:px-7 max-[640px]:py-12"
+              className="flex flex-col items-start self-center flex-[0_0_585px] w-[585px] max-w-full h-[589px] px-[46px] pt-[65px] pb-[87px] bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] max-[1200px]:flex-none max-[1200px]:w-full max-[1200px]:max-w-[585px] max-[1200px]:h-auto max-[640px]:px-7 max-[640px]:py-12 max-[400px]:px-5 max-[400px]:py-9"
               aria-labelledby="login-title"
             >
               <h2
                 id="login-title"
-                className="self-stretch mb-9 text-[26px] font-semibold leading-normal text-[#1e1e21] text-center after:content-[''] after:block after:w-16 after:h-[3px] after:mt-[10px] after:mx-auto after:bg-[#576aff] after:rounded-[2px]"
+                className="self-stretch mb-9 text-[26px] font-semibold leading-normal text-[#1e1e21] text-center after:content-[''] after:block after:w-16 after:h-[3px] after:mt-[10px] after:mx-auto after:bg-[#576aff] after:rounded-[2px] max-[400px]:text-2xl max-[400px]:mb-7"
               >
                 Login
               </h2>
 
               <div className="flex flex-col items-start self-stretch w-full gap-[10px]">
-                <label className="block text-lg font-medium leading-normal text-[#555665]" htmlFor="email">
+                <label className="block text-lg font-medium leading-normal text-[#555665] max-[400px]:text-base" htmlFor="email">
                   Username/Email
                 </label>
                 <div className="flex items-center gap-[10px] h-[54px] px-[10px] w-full bg-white border border-[#c3c5d0] rounded-[4px] transition-colors focus-within:border-[#576aff]">
@@ -150,7 +151,7 @@ function Login() {
               </div>
 
               <div className="flex flex-col items-start self-stretch w-full gap-[10px] mt-[34px]">
-                <label className="block text-lg font-medium leading-normal text-[#555665]" htmlFor="password">
+                <label className="block text-lg font-medium leading-normal text-[#555665] max-[400px]:text-base" htmlFor="password">
                   Password
                 </label>
                 <div className="flex items-center gap-[10px] h-[54px] px-[10px] w-full bg-white border border-[#c3c5d0] rounded-[4px] transition-colors focus-within:border-[#576aff]">
@@ -189,7 +190,7 @@ function Login() {
               <button
                 onClick={handleLogin}
                 disabled={loading}
-                className="flex items-center justify-center self-stretch w-full max-w-[493px] h-[62px] mt-[33px] p-[10px] text-lg font-bold text-white bg-[#576aff] border-none rounded-[3px] cursor-pointer transition-colors hover:bg-[#3d52f2] active:scale-[0.995] disabled:opacity-70 disabled:cursor-not-allowed"
+                className="flex items-center justify-center self-stretch w-full max-w-[493px] h-[62px] mt-[33px] p-[10px] text-lg font-bold text-white bg-[#576aff] border-none rounded-[3px] cursor-pointer transition-colors hover:bg-[#3d52f2] active:scale-[0.995] disabled:opacity-70 disabled:cursor-not-allowed max-[400px]:h-[54px] max-[400px]:text-base"
               >
                 {loading ? 'Connecting...' : 'Login'}
               </button>

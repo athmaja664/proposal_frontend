@@ -132,10 +132,10 @@ function EditProposalModal({ onClose, proposal, getProposals }) {
                     </div>
 
                     <div className="flex justify-end gap-3 mt-6">
-                        <button onClick={onClose} className="inline-flex items-center justify-center gap-2 h-[45px] px-4 text-sm font-medium text-white bg-[#576aff] rounded-[4px] no-underline hover:bg-[#3d52f2] transition-colors whitespace-nowrap">
+                        <button onClick={onClose} className="inline-flex items-center justify-center gap-2 h-[45px] px-4 text-sm font-medium text-white bg-[#576aff] rounded-[4px] no-underline hover:bg-[#3d52f2] transition-colors whitespace-nowrap cursor-pointer">
                             Cancel
                         </button>
-                        <button onClick={handleUpdate} className="inline-flex items-center justify-center gap-2 h-[45px] px-4 text-sm font-medium text-white bg-[#576aff] rounded-[4px] no-underline hover:bg-[#3d52f2] transition-colors whitespace-nowrap">
+                        <button onClick={handleUpdate} className="inline-flex items-center justify-center gap-2 h-[45px] px-4 text-sm font-medium text-white bg-[#576aff] rounded-[4px] no-underline hover:bg-[#3d52f2] transition-colors whitespace-nowrap cursor-pointer">
                             Update Proposal
                         </button>
                     </div>

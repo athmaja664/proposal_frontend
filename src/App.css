@@ -1,0 +1,4 @@
+/* add to your global stylesheet */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+}

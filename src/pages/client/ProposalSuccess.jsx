@@ -112,8 +112,8 @@ if (decision === 'Accepted' && signature?.signature_image_url) {
                 </nav>
             </header>
 
-            <div className="flex items-center justify-center py-16 px-4">
-                <div className="bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] p-8 w-full max-w-md text-center">
+            <div className="flex items-center justify-center py-10 sm:py-16 px-4">
+                <div className="bg-white rounded-[14px] shadow-[0_8px_40px_rgba(9,8,20,0.06)] p-6 sm:p-8 w-full max-w-md text-center">
 
                     <div className={`${decision === 'Rejected' ? 'bg-red-100' : 'bg-green-100'} rounded-full w-14 h-14 flex items-center justify-center mx-auto mb-4`}>
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -125,33 +125,33 @@ if (decision === 'Accepted' && signature?.signature_image_url) {
                         </svg>
                     </div>
 
-                    <h2 className="text-xl font-semibold text-[#1e1e21] mb-1">Proposal {decision}!</h2>
+                    <h2 className="text-lg sm:text-xl font-semibold text-[#1e1e21] mb-1">Proposal {decision}!</h2>
                     <p className="text-gray-500 text-sm mb-6">
                         Your response has been recorded. The sender has been notified.
                     </p>
 
                     <div className="bg-[#f7f7fb] rounded p-4 text-left space-y-2">
-                        <div className="flex justify-between text-sm">
+                        <div className="flex flex-col sm:flex-row sm:justify-between text-sm gap-0.5">
                             <span className="text-gray-500">Proposal</span>
-                            <span className="font-medium">{proposal?.project_name}</span>
+                            <span className="font-medium break-words sm:text-right">{proposal?.project_name}</span>
                         </div>
-                        <div className="flex justify-between text-sm">
+                        <div className="flex flex-col sm:flex-row sm:justify-between text-sm gap-0.5">
                             <span className="text-gray-500">Client</span>
-                            <span className="font-medium">{signature?.client_name}</span>
+                            <span className="font-medium break-words sm:text-right">{signature?.client_name}</span>
                         </div>
-                        <div className="flex justify-between text-sm">
+                        <div className="flex flex-col sm:flex-row sm:justify-between text-sm gap-0.5">
                             <span className="text-gray-500">Email</span>
-                            <span className="font-medium">{signature?.client_email}</span>
+                            <span className="font-medium break-all sm:text-right">{signature?.client_email}</span>
                         </div>
-                        <div className="flex justify-between text-sm">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-0.5">
                             <span className="text-gray-500">Status</span>
-                            <span className={`${decision === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'} text-xs font-medium px-3 py-1 rounded-full`}>
+                            <span className={`${decision === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'} text-xs font-medium px-3 py-1 rounded-full self-start sm:self-auto`}>
                                 {decision}
                             </span>
                         </div>
-                        <div className="flex justify-between text-sm">
+                        <div className="flex flex-col sm:flex-row sm:justify-between text-sm gap-0.5">
                             <span className="text-gray-500">Timestamp</span>
-                            <span className="font-medium">{timestamp}</span>
+                            <span className="font-medium break-words sm:text-right">{timestamp}</span>
                         </div>
                     </div>
 

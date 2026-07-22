@@ -159,11 +159,11 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                                 </div>
 
                                 <div>
-                                    <label className="text-sm text-gray-500 mb-1.5 block">Expiry Date</label>
+                                    <label className="text-sm text-gray-500 mb-1.5 block ">Expiry Date</label>
                                     <input
                                         type="date"
-                                        className="border p-2.5 rounded w-full"
-                                        onChange={(e) => setExpiryDate(e.target.value)}
+                                        className="border p-2.5 rounded w-full "
+                                        onChange={(e) => setExpiryDate(e.target.value) }
                                     />
                                 </div>
 
@@ -194,7 +194,7 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                                         />
                                         <button
                                             onClick={handleCopyLink}
-                                            className="shrink-0 bg-[#576aff] text-white text-xs px-3 py-1 rounded cursor-pointer"
+                                            className="shrink-0 bg-[#576aff] text-white text-xs px-3 py-1 rounded cursor-pointer "
                                         >
                                             Copy Link
                                         </button>
@@ -227,7 +227,7 @@ function GenerateLinkModal({ onClose, proposalId, proposal }) {
                                         )}
 
                                     {(isSent || proposal?.status_name === 'Sent') && (
-                                        <p className="text-center text-sm text-yellow-600 font-medium">
+                                        <p className="text-center text-sm text-yellow-600 font-medium cursor-pointer">
                                             ✓ Marked as Sent
                                         </p>
                                     )}
@@ -270,7 +270,7 @@ ${proposal?.status_name === 'Rejected'
                             </p>
                             <button
                                 onClick={onClose}
-                                className="w-56 py-2 border-2 border-[#576aff] text-[#576aff] rounded-lg hover:bg-[#576aff] hover:text-white transition"
+                                className="w-56 py-2 border-2 border-[#576aff] text-[#576aff] rounded-lg hover:bg-[#576aff] hover:text-white transition cursor-pointer"
                             >
                                 Close
                             </button>
