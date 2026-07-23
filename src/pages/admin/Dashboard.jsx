@@ -34,8 +34,8 @@ function Dashboard() {
     const [selectedProposalId, setSelectedProposalId] = useState('')
     //dlt notf
     const [confirmDeleteId, setConfirmDeleteId] = useState(null)
-    // action menu toggle (UI only — which card's action dropdown is open)
-    const [openActionId, setOpenActionId] = useState(null)
+
+     const [openActionId, setOpenActionId] = useState(null)
     // ref for the currently open action dropdown, used to detect outside clicks
     const actionRef = useRef(null)
     const token = localStorage.getItem('token')
