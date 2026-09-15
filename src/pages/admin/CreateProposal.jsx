@@ -142,11 +142,12 @@ function CreateProposal() {
                 return
             }
         }
-        setLoading(true)
-        if (!clientId || !projectId || !proposalData.description || !proposalData.cost) {
-            toast.error('Please fill all required fields!')
-            return
-        }
+       
+if (!clientId || !projectId || !proposalData.description || !proposalData.cost) {
+    toast.error('Please fill all required fields!')
+    return
+}
+setLoading(true)
 
         const formData = new FormData()
         formData.append('clientId', clientId)
@@ -189,6 +190,13 @@ function CreateProposal() {
                             placeholder="Search client"
                             onChange={handleClientChange}
                         // styles={selectStyles}
+                       styles={{
+        control: (base) => ({ ...base, cursor: 'pointer' }),
+        input: (base) => ({ ...base, cursor: 'pointer' }),
+        placeholder: (base) => ({ ...base, cursor: 'pointer' }),
+        singleValue: (base) => ({ ...base, cursor: 'pointer' })
+    }}
+                        
                         />
                     </div>
 
@@ -199,6 +207,7 @@ function CreateProposal() {
                             placeholder="Search project"
                             onChange={handleProjectChange}
                         // styles={selectStyles}
+                        styles={{ control: (base) => ({ ...base, cursor: 'pointer' }) }}
                         />
                     </div>
 
@@ -278,7 +287,7 @@ function CreateProposal() {
                                     </button>
                                 </div>
                                 <select
-                                    className="w-full border-2 border-[#cfd3de] rounded-lg px-4 py-4 text-sm outline-none focus:border-[#576aff]"
+                                    className="w-full border-2 border-[#cfd3de] rounded-lg px-4 py-4 text-sm outline-none focus:border-[#576aff] cursor-pointer"
                                     value={proposalData.statusId}
                                     onChange={(e) => setProposalData({ ...proposalData, statusId: e.target.value })}
                                 >

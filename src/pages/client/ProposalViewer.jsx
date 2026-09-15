@@ -284,7 +284,7 @@ function ProposalViewer() {
                                         <div className="border rounded-lg overflow-hidden mb-4">
                                             <div className="bg-gray-50 border-b px-3 py-2 flex justify-between items-center">
                                                 <span className="text-xs text-gray-500">Draw your signature below</span>
-                                                <button onClick={clearCanvas} className="text-xs border px-2 py-1 rounded text-gray-500">
+                                                <button onClick={clearCanvas} className="text-xs border px-2 py-1 rounded text-gray-500 cursor-pointer">
                                                     Clear
                                                 </button>
                                             </div>
